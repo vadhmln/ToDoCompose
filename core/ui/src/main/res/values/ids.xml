@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="action_global_to_nav_new_feature" type="id"/>
+    <item name="action_global_to_nav_second_feature" type="id"/>
+</resources>
