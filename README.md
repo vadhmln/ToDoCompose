@@ -4,11 +4,11 @@
 
 Технологии:
 
-- модульность ([Modularization](https://developer.android.com/topic/modularization))
-- Управление версиями ([Version catalog](https://docs.gradle.org/current/userguide/platforms.html))
-- ([Jetpack Compose](https://developer.android.com/jetpack/compose))
-- ([Material3](https://m3.material.io))
-- ([DI - Hilt](https://developer.android.com/training/dependency-injection/hilt-android))
+- модульность [Modularization](https://developer.android.com/topic/modularization)
+- Управление версиями [Version catalog](https://docs.gradle.org/current/userguide/platforms.html)
+- [Jetpack Compose](https://developer.android.com/jetpack/compose)
+- [Material3](https://m3.material.io)
+- [DI - Hilt](https://developer.android.com/training/dependency-injection/hilt-android)
 - ROOM
 - Preferences DataStore
 - Animate UI Components
