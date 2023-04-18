@@ -35,9 +35,10 @@ android {
 
 dependencies {
 
-    implementation(project(":core:datasource"))
+    implementation(project(":core:domain"))
 
     implementation(libs.core.ktx)
+    implementation(libs.kotlinx.coroutines.android)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     kotlin("kapt")
+    id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
 }
 
@@ -54,27 +55,32 @@ android {
 
 dependencies {
 
+    implementation(project(":common"))
     implementation(project(":core:ui"))
-    implementation(project(":navigation"))
     implementation(project(":core:presentation"))
     implementation(project(":core:domain"))
+    implementation(project(":core:data"))
+    implementation(project(":core:datasource"))
+    implementation(project(":core:database"))
+    implementation(project(":navigation"))
 
-    implementation(project(":feature:newfeature:ui"))
-    implementation(project(":feature:newfeature:presentation"))
-    implementation(project(":feature:newfeature:domain"))
-    implementation(project(":feature:newfeature:data"))
-    implementation(project(":feature:newfeature:datasource"))
+    implementation(project(":feature:todolist:ui"))
+    implementation(project(":feature:todolist:presentation"))
+    implementation(project(":feature:todolist:domain"))
+    implementation(project(":feature:todolist:data"))
+    implementation(project(":feature:todolist:datasource"))
 
-    implementation(project(":feature:secondfeature:ui"))
-    implementation(project(":feature:secondfeature:presentation"))
-    implementation(project(":feature:secondfeature:domain"))
-    implementation(project(":feature:secondfeature:data"))
-    implementation(project(":feature:secondfeature:datasource"))
+    implementation(project(":feature:todotask:ui"))
+    implementation(project(":feature:todotask:presentation"))
+    implementation(project(":feature:todotask:domain"))
+    implementation(project(":feature:todotask:data"))
+    implementation(project(":feature:todotask:datasource"))
 
     implementation(libs.core.ktx)
     implementation(libs.android.material)
     implementation(libs.navigation.fragment.ktx)
     implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.lifecycle.viewmodel)
     implementation(libs.activity.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(platform(libs.compose.bom))
@@ -83,6 +89,12 @@ dependencies {
     implementation(libs.ui.tooling.preview)
     implementation(libs.compose.material3)
     implementation(libs.androidx.material3.size)
+
+    //Room
+    implementation(libs.room.runtime)
+    kapt(libs.room.compiler)
+    implementation(libs.room.ktx)
+    androidTestImplementation(libs.room.testing)
 
     //Hilt
     implementation(libs.hilt.android)

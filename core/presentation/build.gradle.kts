@@ -38,8 +38,10 @@ android {
 dependencies {
 
     implementation(project(":core:domain"))
-    
+    implementation(project(":common"))
+
     implementation(libs.core.ktx)
+    implementation(libs.activity.compose)
     implementation(libs.lifecycle.viewmodel)
 
     //Hilt

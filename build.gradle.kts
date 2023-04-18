@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.kotlin.ksp) apply false
     alias(libs.plugins.hilt.android) apply false
 }
 //Workaround for "Expecting an expression" build error

@@ -1,27 +1,32 @@
 package ru.vdh.todocompose.navigation
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.rememberNavController
 import ru.vdh.cleanarch.navigation.Screen
-import ru.vdh.todocompose.newfeature.navigation.newFeatureScreen
-import ru.vdh.todocompose.secondfeature.navigation.secondFeatureScreen
+import ru.vdh.todocompose.todolist.navigation.todoListComposable
+import ru.vdh.todocompose.secondfeature.navigation.todoTaskComposable
+import ru.vdh.todocompose.secondfeature.presentation.viewmodel.ToDoTaskViewModel
+import ru.vdh.todocompose.todolist.presentation.viewmodel.ToDoListViewModel
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MyAppNavHost(
     modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController(),
+    navController: NavHostController,
     onBackClick: () -> Unit,
-    startDestination: String = Screen.NewFeatureScreen.route
+    startDestination: String = Screen.ToDoListScreen.route,
+    toDoListViewModel: ToDoListViewModel,
+    toDoTaskViewModel: ToDoTaskViewModel
 ) {
     NavHost(
         modifier = modifier,
         navController = navController,
         startDestination = startDestination
     ) {
-        newFeatureScreen(navController)
-        secondFeatureScreen(navController)
+        todoListComposable(navController, toDoListViewModel)
+        todoTaskComposable(navController, toDoTaskViewModel)
     }
 }

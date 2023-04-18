@@ -33,6 +33,12 @@ android {
     kotlinOptions {
         jvmTarget = libs.versions.jvmTarget.get()
     }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
+    }
 }
 
 dependencies {
@@ -40,6 +46,14 @@ dependencies {
     implementation(project(":core:presentation"))
 
     implementation(libs.core.ktx)
+    implementation(libs.activity.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(platform(libs.compose.bom))
+    implementation(libs.ui)
+    implementation(libs.ui.graphics)
+    implementation(libs.ui.tooling.preview)
+    implementation(libs.compose.material3)
+    implementation(libs.androidx.material3.size)
 
     //Hilt
     implementation(libs.hilt.android)
