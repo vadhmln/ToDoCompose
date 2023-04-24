@@ -12,17 +12,17 @@ class ToDoListRepositoryImpl(
     private val toDoListDataToDomainMapper: ToDoListDataToDomainMapper,
 ) : ToDoListRepository {
 
-    override fun getAllTasks(): Flow<List<ToDoTaskDomainModel>> =
+    override fun getAllTasks(): Flow<List<ToDoTaskDomainModel?>> =
         toDoListDataSource.getAllTasks().map { list ->
             list.map(toDoListDataToDomainMapper::toDomain)
         }
 
-    override fun sortByLowPriority(): Flow<List<ToDoTaskDomainModel>> =
+    override fun sortByLowPriority(): Flow<List<ToDoTaskDomainModel?>> =
         toDoListDataSource.sortByLowPriority().map { list ->
             list.map(toDoListDataToDomainMapper::toDomain)
         }
 
-    override fun sortByHighPriority(): Flow<List<ToDoTaskDomainModel>> =
+    override fun sortByHighPriority(): Flow<List<ToDoTaskDomainModel?>> =
         toDoListDataSource.sortByHighPriority().map { list ->
             list.map(toDoListDataToDomainMapper::toDomain)
         }

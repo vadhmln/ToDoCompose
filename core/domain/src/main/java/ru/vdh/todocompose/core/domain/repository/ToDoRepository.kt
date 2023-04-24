@@ -5,11 +5,11 @@ import ru.vdh.todocompose.core.domain.model.ToDoTaskDomainModel
 
 interface ToDoRepository {
 
-    val getAllTasks: Flow<List<ToDoTaskDomainModel>>
-    val sortByLowPriority: Flow<List<ToDoTaskDomainModel>>
-    val sortByHighPriority: Flow<List<ToDoTaskDomainModel>>
+    val getAllTasks: Flow<List<ToDoTaskDomainModel?>>
+    val sortByLowPriority: Flow<List<ToDoTaskDomainModel?>>
+    val sortByHighPriority: Flow<List<ToDoTaskDomainModel?>>
 
-    fun getSelectedTask(taskId: Int): Flow<ToDoTaskDomainModel>
+    fun getSelectedTask(taskId: Int): Flow<ToDoTaskDomainModel?>
 
     suspend fun addTask(toDoTask: ToDoTaskDomainModel)
 
@@ -19,5 +19,5 @@ interface ToDoRepository {
 
     suspend fun deleteAllTasks()
 
-    fun searchDatabase(searchQuery: String): Flow<List<ToDoTaskDomainModel>>
+    fun searchDatabase(searchQuery: String): Flow<List<ToDoTaskDomainModel?>>
 }

@@ -5,12 +5,14 @@ import ru.vdh.todocompose.todolist.domain.model.ToDoTaskDomainModel
 
 class ToDoListDataToDomainMapper {
 
-    fun toDomain(input: ToDoTaskDataModel) =
-        ToDoTaskDomainModel(
-            date = input.date,
-            id = input.id,
-            title = input.title,
-            priority = input.priority,
-            description = input.description
-        )
+    fun toDomain(input: ToDoTaskDataModel?) =
+        input?.let {
+            ToDoTaskDomainModel(
+                date = input.date,
+                id = input.id,
+                title = input.title,
+                priority = input.priority,
+                description = input.description
+            )
+        }
 }

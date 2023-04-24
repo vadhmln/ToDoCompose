@@ -10,6 +10,6 @@ class TaskDataSourceImpl(
     private val toDoDataSource: ToDoDataSource,
 ) : TaskDataSource {
 
-    override fun getSelectedTask(taskId: Int): Flow<ToDoTaskDataModel> =
+    override fun getSelectedTask(taskId: Int): Flow<ToDoTaskDataModel?> =
         toDoDataSource.getSelectedTask(taskId)
 }

@@ -6,13 +6,13 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.composable
-import ru.vdh.cleanarch.navigation.Screen
+import ru.vdh.todocompose.common.utils.Action
 import ru.vdh.todocompose.common.utils.Constants.TASK_ARGUMENT_KEY
+import ru.vdh.todocompose.common.utils.Constants.TASK_SCREEN
 import ru.vdh.todocompose.secondfeature.presentation.viewmodel.ToDoTaskViewModel
 import ru.vdh.todocompose.secondfeature.ui.view.ToDoTaskScreen
 
@@ -20,11 +20,11 @@ const val secondFeatureRoute = "second_feature_route"
 
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.todoTaskComposable(
-    navController: NavController,
+    navigateToListScreen: (Action) -> Unit,
     toDoTaskViewModel: ToDoTaskViewModel
 ) {
     composable(
-        route = Screen.ToDoTaskScreen.route,
+        route = TASK_SCREEN,
         arguments = listOf(navArgument(TASK_ARGUMENT_KEY) {
             type = NavType.IntType
         }),
@@ -49,6 +49,10 @@ fun NavGraphBuilder.todoTaskComposable(
             }
         }
 
-        ToDoTaskScreen(navController)
+        ToDoTaskScreen(
+            selectedTask = selectedTask,
+            toDoTaskViewModel = toDoTaskViewModel,
+            navigateToListScreen = navigateToListScreen
+        )
     }
 }

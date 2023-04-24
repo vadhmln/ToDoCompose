@@ -5,9 +5,9 @@ import ru.vdh.todocompose.todolist.domain.model.ToDoTaskDomainModel
 
 interface ToDoListRepository {
 
-    fun getAllTasks(): Flow<List<ToDoTaskDomainModel>>
+    fun getAllTasks(): Flow<List<ToDoTaskDomainModel?>>
 
-    fun sortByLowPriority(): Flow<List<ToDoTaskDomainModel>>
+    fun sortByLowPriority(): Flow<List<ToDoTaskDomainModel?>>
 
-    fun sortByHighPriority(): Flow<List<ToDoTaskDomainModel>>
+    fun sortByHighPriority(): Flow<List<ToDoTaskDomainModel?>>
 }

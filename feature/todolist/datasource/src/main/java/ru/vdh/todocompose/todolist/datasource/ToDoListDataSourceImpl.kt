@@ -10,12 +10,12 @@ class ToDoListDataSourceImpl(
     private val toDoDataSource: ToDoDataSource,
 ) : ToDoListDataSource {
 
-    override fun getAllTasks(): Flow<List<ToDoTaskDataModel>> =
+    override fun getAllTasks(): Flow<List<ToDoTaskDataModel?>> =
         toDoDataSource.getAllTasks()
 
-    override fun sortByLowPriority(): Flow<List<ToDoTaskDataModel>> =
+    override fun sortByLowPriority(): Flow<List<ToDoTaskDataModel?>> =
         toDoDataSource.sortByLowPriority()
 
-    override fun sortByHighPriority(): Flow<List<ToDoTaskDataModel>> =
+    override fun sortByHighPriority(): Flow<List<ToDoTaskDataModel?>> =
         toDoDataSource.sortByHighPriority()
 }

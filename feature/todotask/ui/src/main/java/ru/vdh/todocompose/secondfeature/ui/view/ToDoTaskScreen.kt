@@ -1,6 +1,7 @@
 package ru.vdh.todocompose.secondfeature.ui.view
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
@@ -17,22 +18,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import ru.vdh.cleanarch.navigation.Screen
+import ru.vdh.todocompose.common.utils.Action
+import ru.vdh.todocompose.secondfeature.presentation.model.ToDoTaskPresentationModel
+import ru.vdh.todocompose.secondfeature.presentation.viewmodel.ToDoTaskViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ToDoTaskScreen(navController: NavController) {
+fun ToDoTaskScreen(
+    selectedTask: ToDoTaskPresentationModel?,
+    navigateToListScreen: (Action) -> Unit,
+    toDoTaskViewModel: ToDoTaskViewModel
+) {
+
+    BackHandler {
+        navigateToListScreen(Action.NO_ACTION)
+    }
+
     Scaffold(
-        floatingActionButton = {
-            FloatingActionButton(onClick = {
-                navController.navigate(Screen.ToDoListScreen.route)
-            }) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = null
-                )
-            }
-        },
         topBar = {
             TopAppBar(
                 title = {
@@ -43,11 +46,10 @@ fun ToDoTaskScreen(navController: NavController) {
                         Icon(Icons.Filled.ArrowBack, "backIcon")
                     }
                 },
-                colors = TopAppBarDefaults.smallTopAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White
-                )
+                    titleContentColor = Color.White
+                ),
             )
         }
     ) {

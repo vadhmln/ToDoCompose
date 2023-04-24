@@ -5,6 +5,6 @@ import ru.vdh.todocompose.core.data.model.ToDoTaskDataModel
 
 interface TaskDataSource {
 
-    fun getSelectedTask(taskId: Int): Flow<ToDoTaskDataModel>
+    fun getSelectedTask(taskId: Int): Flow<ToDoTaskDataModel?>
 
 }

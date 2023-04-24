@@ -15,22 +15,22 @@ class ToDoRepositoryImpl (
     private val toDoListDomainToDataMapper: ToDoListDomainToDataMapper
 ) : ToDoRepository {
 
-    override val getAllTasks: Flow<List<ToDoTaskDomainModel>> =
+    override val getAllTasks: Flow<List<ToDoTaskDomainModel?>> =
         toDoDataSource.getAllTasks().map { list ->
             list.map(toDoListDataToDomainMapper::toDomain)
         }
 
-    override val sortByLowPriority: Flow<List<ToDoTaskDomainModel>> =
+    override val sortByLowPriority: Flow<List<ToDoTaskDomainModel?>> =
         toDoDataSource.sortByLowPriority().map { list ->
             list.map(toDoListDataToDomainMapper::toDomain)
         }
 
-    override val sortByHighPriority: Flow<List<ToDoTaskDomainModel>> =
+    override val sortByHighPriority: Flow<List<ToDoTaskDomainModel?>> =
         toDoDataSource.sortByHighPriority().map { list ->
             list.map(toDoListDataToDomainMapper::toDomain)
         }
 
-    override fun getSelectedTask(taskId: Int): Flow<ToDoTaskDomainModel> =
+    override fun getSelectedTask(taskId: Int): Flow<ToDoTaskDomainModel?> =
          toDoDataSource.getSelectedTask(taskId = taskId).map(toDoListDataToDomainMapper::toDomain)
 
 
@@ -53,7 +53,7 @@ class ToDoRepositoryImpl (
         toDoDataSource.deleteAllTasks()
     }
 
-    override fun searchDatabase(searchQuery: String): Flow<List<ToDoTaskDomainModel>> =
+    override fun searchDatabase(searchQuery: String): Flow<List<ToDoTaskDomainModel?>> =
          toDoDataSource.searchDatabase(searchQuery = searchQuery).map { list ->
              list.map(toDoListDataToDomainMapper::toDomain)
          }

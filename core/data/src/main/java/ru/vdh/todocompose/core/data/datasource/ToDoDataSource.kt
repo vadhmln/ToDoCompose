@@ -5,13 +5,13 @@ import ru.vdh.todocompose.core.data.model.ToDoTaskDataModel
 
 interface ToDoDataSource {
 
-    fun getAllTasks(): Flow<List<ToDoTaskDataModel>>
+    fun getAllTasks(): Flow<List<ToDoTaskDataModel?>>
 
-    fun sortByLowPriority(): Flow<List<ToDoTaskDataModel>>
+    fun sortByLowPriority(): Flow<List<ToDoTaskDataModel?>>
 
-    fun sortByHighPriority(): Flow<List<ToDoTaskDataModel>>
+    fun sortByHighPriority(): Flow<List<ToDoTaskDataModel?>>
 
-    fun getSelectedTask(taskId: Int): Flow<ToDoTaskDataModel>
+    fun getSelectedTask(taskId: Int): Flow<ToDoTaskDataModel?>
 
     suspend fun addTask(toDoTask: ToDoTaskDataModel)
 
@@ -21,5 +21,5 @@ interface ToDoDataSource {
 
     suspend fun deleteAllTasks()
 
-    fun searchDatabase(searchQuery: String): Flow<List<ToDoTaskDataModel>>
+    fun searchDatabase(searchQuery: String): Flow<List<ToDoTaskDataModel?>>
 }

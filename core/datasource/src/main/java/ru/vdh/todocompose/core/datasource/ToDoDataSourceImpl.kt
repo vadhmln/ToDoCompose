@@ -14,22 +14,22 @@ class ToDoDataSourceImpl(
     private val toDoDao: ToDoDao,
 ) : ToDoDataSource {
 
-    override fun getAllTasks(): Flow<List<ToDoTaskDataModel>> =
+    override fun getAllTasks(): Flow<List<ToDoTaskDataModel?>> =
         toDoDao.getAllTasks().map { list ->
             list.map(dataBaseToToDoListDataMapper::toData)
         }
 
-    override fun sortByLowPriority(): Flow<List<ToDoTaskDataModel>> =
+    override fun sortByLowPriority(): Flow<List<ToDoTaskDataModel?>> =
         toDoDao.sortByLowPriority().map { list ->
             list.map(dataBaseToToDoListDataMapper::toData)
         }
 
-    override fun sortByHighPriority(): Flow<List<ToDoTaskDataModel>> =
+    override fun sortByHighPriority(): Flow<List<ToDoTaskDataModel?>> =
         toDoDao.sortByHighPriority().map { list ->
             list.map(dataBaseToToDoListDataMapper::toData)
         }
 
-    override fun getSelectedTask(taskId: Int): Flow<ToDoTaskDataModel> =
+    override fun getSelectedTask(taskId: Int): Flow<ToDoTaskDataModel?> =
          toDoDao.getSelectedTask(taskId = taskId).map(dataBaseToToDoListDataMapper::toData)
 
 
@@ -52,7 +52,7 @@ class ToDoDataSourceImpl(
         toDoDao.deleteAllTasks()
     }
 
-    override fun searchDatabase(searchQuery: String): Flow<List<ToDoTaskDataModel>> =
+    override fun searchDatabase(searchQuery: String): Flow<List<ToDoTaskDataModel?>> =
        toDoDao.searchDatabase(searchQuery = searchQuery).map { list ->
            list.map(dataBaseToToDoListDataMapper::toData)
        }

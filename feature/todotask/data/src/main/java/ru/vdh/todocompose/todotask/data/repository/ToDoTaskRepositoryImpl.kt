@@ -12,7 +12,7 @@ class ToDoTaskRepositoryImpl(
     private val toDoTaskDataToDomainMapper: ToDoTaskDataToDomainMapper,
 ) : ToDoTaskRepository {
 
-    override fun getSelectedTask(taskId: Int): Flow<ToDoTaskDomainModel> =
+    override fun getSelectedTask(taskId: Int): Flow<ToDoTaskDomainModel?> =
         taskDataSource.getSelectedTask(taskId).map(toDoTaskDataToDomainMapper::toDomain)
 }
 

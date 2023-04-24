@@ -5,12 +5,14 @@ import ru.vdh.todocompose.secondfeature.presentation.model.ToDoTaskPresentationM
 
 class ToDoTaskDomainToPresentationMapper {
 
-    fun toPresentation(input: ToDoTaskDomainModel) =
-        ToDoTaskPresentationModel(
-            date = input.date,
-            id = input.id,
-            title = input.title,
-            priority = input.priority,
-            description = input.description
-        )
+    fun toPresentation(input: ToDoTaskDomainModel?) =
+        input?.let {
+            ToDoTaskPresentationModel(
+                date = input.date,
+                id = input.id,
+                title = input.title,
+                priority = input.priority,
+                description = input.description
+            )
+        }
 }
