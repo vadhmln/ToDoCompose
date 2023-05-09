@@ -1,5 +1,6 @@
 package ru.vdh.todocompose.core.datasource
 
+import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ru.vdh.todocompose.core.datasource.mapper.DataBaseToToDoListDataMapper
@@ -36,6 +37,7 @@ class ToDoDataSourceImpl(
     override suspend fun addTask(toDoTask: ToDoTaskDataModel) {
         val toDo = toDoDataToDataBaseMapper.toDataBase(toDoTask)
         toDoDao.addTask(toDoTask = toDo)
+        Log.d("AddTask", "$toDoTask")
     }
 
     override suspend fun updateTask(toDoTask: ToDoTaskDataModel) {

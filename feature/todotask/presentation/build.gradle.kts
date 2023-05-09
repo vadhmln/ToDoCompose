@@ -38,6 +38,7 @@ android {
 dependencies {
 
     implementation(project(":core:presentation"))
+    implementation(project(":common"))
     implementation(project(":core:domain"))
     implementation(project(":core:ui")) // check this
     implementation(project(":feature:todotask:domain"))

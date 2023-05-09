@@ -30,3 +30,4 @@ fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observ
 }
 
 fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
+

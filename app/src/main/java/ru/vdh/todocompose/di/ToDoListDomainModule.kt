@@ -5,9 +5,13 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import ru.vdh.todocompose.core.domain.coroutine.CoroutineContextProvider
+import ru.vdh.todocompose.secondfeature.domain.repository.ToDoTaskRepository
 import ru.vdh.todocompose.todolist.domain.repository.ToDoListRepository
+import ru.vdh.todocompose.todolist.domain.usecase.AddTaskUseCase
 import ru.vdh.todocompose.todolist.domain.usecase.GetAllTasksUseCase
-import ru.vdh.todocompose.todolist.domain.usecase.SaveNewFeatureUseCase
+import ru.vdh.todocompose.todolist.domain.usecase.GetSelectedTaskUseCase
+import ru.vdh.todocompose.todolist.domain.usecase.SortByHighPriorityUseCase
+import ru.vdh.todocompose.todolist.domain.usecase.SortByLowPriorityUseCase
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -23,12 +27,34 @@ class ToDoListDomainModule {
         )
 
     @Provides
-    fun provideSaveNewFeatureUseCase(
+    fun provideSortByLowPriorityUseCase(
         toDoListRepository: ToDoListRepository,
-        coroutineContextProvider: CoroutineContextProvider
-    ): SaveNewFeatureUseCase =
-        SaveNewFeatureUseCase(
+    ): SortByLowPriorityUseCase =
+        SortByLowPriorityUseCase(
             toDoListRepository = toDoListRepository,
-            coroutineContextProvider = coroutineContextProvider
+        )
+
+    @Provides
+    fun provideSortByHighPriorityUseCase(
+        toDoListRepository: ToDoListRepository,
+    ): SortByHighPriorityUseCase =
+        SortByHighPriorityUseCase(
+            toDoListRepository = toDoListRepository,
+        )
+
+    @Provides
+    fun provideGetSelectedTaskUseCase(
+        toDoListRepository: ToDoListRepository,
+    ): GetSelectedTaskUseCase =
+        GetSelectedTaskUseCase(
+            toDoListRepository = toDoListRepository,
+        )
+
+    @Provides
+    fun provideAddTaskUseCase(
+        toDoListRepository: ToDoListRepository,
+    ): AddTaskUseCase =
+        AddTaskUseCase(
+            toDoListRepository = toDoListRepository,
         )
 }

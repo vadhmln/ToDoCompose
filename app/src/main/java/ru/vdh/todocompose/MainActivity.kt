@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
 import ru.vdh.todocompose.core.ui.theme.MyApplicationTheme
 import ru.vdh.todocompose.navigation.MyAppNavHost
-import ru.vdh.todocompose.secondfeature.presentation.viewmodel.ToDoTaskViewModel
+import ru.vdh.todocompose.todotask.presentation.viewmodel.ToDoTaskViewModel
 import ru.vdh.todocompose.todolist.presentation.viewmodel.ToDoListViewModel
 
 @AndroidEntryPoint

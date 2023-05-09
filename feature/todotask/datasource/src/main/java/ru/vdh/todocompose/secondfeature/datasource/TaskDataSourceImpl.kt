@@ -12,4 +12,8 @@ class TaskDataSourceImpl(
 
     override fun getSelectedTask(taskId: Int): Flow<ToDoTaskDataModel?> =
         toDoDataSource.getSelectedTask(taskId)
+
+    override suspend fun addTask(toDoTask: ToDoTaskDataModel) {
+        toDoDataSource.addTask(toDoTask)
+    }
 }

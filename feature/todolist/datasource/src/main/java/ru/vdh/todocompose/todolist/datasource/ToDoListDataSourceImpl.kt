@@ -1,5 +1,6 @@
 package ru.vdh.todocompose.todolist.datasource
 
+import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import ru.vdh.todocompose.core.data.datasource.ToDoDataSource
 import ru.vdh.todocompose.core.data.model.ToDoTaskDataModel
@@ -13,9 +14,17 @@ class ToDoListDataSourceImpl(
     override fun getAllTasks(): Flow<List<ToDoTaskDataModel?>> =
         toDoDataSource.getAllTasks()
 
+    override fun getSelectedTask(taskId: Int): Flow<ToDoTaskDataModel?> =
+        toDoDataSource.getSelectedTask(taskId)
+
     override fun sortByLowPriority(): Flow<List<ToDoTaskDataModel?>> =
         toDoDataSource.sortByLowPriority()
 
     override fun sortByHighPriority(): Flow<List<ToDoTaskDataModel?>> =
         toDoDataSource.sortByHighPriority()
+
+    override suspend fun addTask(toDoTask: ToDoTaskDataModel) {
+        toDoDataSource.addTask(toDoTask)
+        Log.d("AddTask", "$toDoTask")
+    }
 }

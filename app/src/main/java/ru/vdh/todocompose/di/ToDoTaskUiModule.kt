@@ -6,9 +6,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.FragmentComponent
 import ru.vdh.todocompose.core.ui.mapper.ViewStateBinder
 import ru.vdh.todocompose.core.ui.view.ViewsProvider
-import ru.vdh.todocompose.secondfeature.presentation.model.NewFeatureViewState
-import ru.vdh.todocompose.secondfeature.ui.binder.NewFeatureViewStateBinder
-import ru.vdh.todocompose.secondfeature.ui.mapper.NewUserNotificationPresentationToUiMapper
+import ru.vdh.todocompose.todotask.presentation.model.NewFeatureViewState
+import ru.vdh.todocompose.todotask.ui.binder.NewFeatureViewStateBinder
+import ru.vdh.todocompose.todotask.ui.mapper.NewUserNotificationPresentationToUiMapper
 
 @Module
 @InstallIn(FragmentComponent::class)

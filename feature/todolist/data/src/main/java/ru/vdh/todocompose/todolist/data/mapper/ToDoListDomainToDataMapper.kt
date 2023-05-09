@@ -7,10 +7,10 @@ class ToDoListDomainToDataMapper {
 
     fun toData(input: ToDoTaskDomainModel) =
         ToDoTaskDataModel(
-            date = input.date,
             id = input.id,
             title = input.title,
             priority = input.priority,
-            description = input.description
+            description = input.description,
+            date = input.date,
         )
 }

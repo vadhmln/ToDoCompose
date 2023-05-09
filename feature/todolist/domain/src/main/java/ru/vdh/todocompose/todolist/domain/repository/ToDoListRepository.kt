@@ -7,7 +7,11 @@ interface ToDoListRepository {
 
     fun getAllTasks(): Flow<List<ToDoTaskDomainModel?>>
 
+    fun getSelectedTask(taskId: Int): Flow<ToDoTaskDomainModel?>
+
     fun sortByLowPriority(): Flow<List<ToDoTaskDomainModel?>>
 
     fun sortByHighPriority(): Flow<List<ToDoTaskDomainModel?>>
+
+    suspend fun addTask(toDoTask: ToDoTaskDomainModel)
 }

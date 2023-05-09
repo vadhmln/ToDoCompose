@@ -6,8 +6,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import ru.vdh.todocompose.core.domain.coroutine.CoroutineContextProvider
 import ru.vdh.todocompose.secondfeature.domain.repository.ToDoTaskRepository
+import ru.vdh.todocompose.todolist.domain.usecase.AddTaskUseCase
 import ru.vdh.todocompose.secondfeature.domain.usecase.GetSelectedTaskUseCase
-import ru.vdh.todocompose.secondfeature.domain.usecase.SaveNewFeatureUseCase
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -20,15 +20,5 @@ class ToDoTaskDomainModule {
     ): GetSelectedTaskUseCase =
         GetSelectedTaskUseCase(
             toDoTaskRepository = toDoTaskRepository,
-        )
-
-    @Provides
-    fun provideSaveNewFeatureUseCase(
-        toDoTaskRepository: ToDoTaskRepository,
-        coroutineContextProvider: CoroutineContextProvider
-    ): SaveNewFeatureUseCase =
-        SaveNewFeatureUseCase(
-            toDoTaskRepository = toDoTaskRepository,
-            coroutineContextProvider = coroutineContextProvider
         )
 }

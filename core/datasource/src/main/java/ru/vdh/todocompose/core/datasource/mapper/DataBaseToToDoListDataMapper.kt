@@ -9,33 +9,29 @@ class DataBaseToToDoListDataMapper {
     fun toData(input: ToDoTaskDatabaseModel?) =
         input?.let {
             ToDoTaskDataModel(
-                input.id,
-                input.title,
-                parsePriority(input.priority),
-                input.description,
-                input.date,
+                id = input.id,
+                title = input.title,
+                description = input.description,
+                priority = parsePriority(input.priority),
+                date = input.date,
             )
         }
-
 
     private fun parsePriority(priority: PriorityDatabaseModel): String {
         return when (priority) {
             PriorityDatabaseModel.HIGH -> {
-                "High priority"
+                "HIGH"
             }
 
             PriorityDatabaseModel.MEDIUM -> {
-                "Medium priority"
+                "MEDIUM"
             }
 
             PriorityDatabaseModel.LOW -> {
-                "Low priority"
-            }
-            PriorityDatabaseModel.NONE -> {
-                "None"
+                "LOW"
             }
 
-            else -> "Low priority"
+            else -> "NONE"
         }
     }
 

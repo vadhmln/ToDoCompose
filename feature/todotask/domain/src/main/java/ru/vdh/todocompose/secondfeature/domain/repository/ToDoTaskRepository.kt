@@ -5,4 +5,6 @@ import ru.vdh.todocompose.secondfeature.domain.model.ToDoTaskDomainModel
 
 interface ToDoTaskRepository {
     fun getSelectedTask(taskId: Int): Flow<ToDoTaskDomainModel?>
+
+    suspend fun addTask(toDoTask: ToDoTaskDomainModel)
 }

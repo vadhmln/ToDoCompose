@@ -34,8 +34,10 @@ class ToDoListDataModule {
     fun provideNewFeatureRepository(
         toDoListDataSource: ToDoListDataSource,
         toDoListDataToDomainMapper: ToDoListDataToDomainMapper,
+        toDoListDomainToDataMapper: ToDoListDomainToDataMapper
     ): ToDoListRepository = ToDoListRepositoryImpl(
         toDoListDataSource = toDoListDataSource,
         toDoListDataToDomainMapper,
+        toDoListDomainToDataMapper
     )
 }

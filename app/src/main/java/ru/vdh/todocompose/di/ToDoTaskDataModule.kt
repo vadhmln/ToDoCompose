@@ -9,8 +9,8 @@ import ru.vdh.todocompose.todotask.data.mapper.ToDoTaskDomainToDataMapper
 import ru.vdh.todocompose.todotask.data.mapper.ToDoTaskDataToDomainMapper
 import ru.vdh.todocompose.todotask.data.repository.ToDoTaskRepositoryImpl
 import ru.vdh.todocompose.secondfeature.domain.repository.ToDoTaskRepository
-import ru.vdh.todocompose.secondfeature.presentation.mapper.ToDoTaskDomainToPresentationMapper
-import ru.vdh.todocompose.secondfeature.presentation.mapper.ToDoTaskPresentationToDomainMapper
+import ru.vdh.todocompose.todotask.presentation.mapper.ToDoTaskDomainToPresentationMapper
+import ru.vdh.todocompose.todotask.presentation.mapper.ToDoTaskPresentationToDomainMapper
 import javax.inject.Singleton
 
 @Module
@@ -34,8 +34,10 @@ class ToDoTaskDataModule {
     fun provideToDoTaskRepository(
         taskDataSource: TaskDataSource,
         toDoTaskDataToDomainMapper: ToDoTaskDataToDomainMapper,
+        toDoTaskDomainToDataMapper: ToDoTaskDomainToDataMapper
     ): ToDoTaskRepository = ToDoTaskRepositoryImpl(
         taskDataSource = taskDataSource,
-        toDoTaskDataToDomainMapper
+        toDoTaskDataToDomainMapper,
+        toDoTaskDomainToDataMapper
     )
 }

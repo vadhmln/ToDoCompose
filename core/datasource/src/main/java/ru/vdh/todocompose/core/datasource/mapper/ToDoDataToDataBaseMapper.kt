@@ -8,24 +8,24 @@ class ToDoDataToDataBaseMapper() {
 
     fun toDataBase(input: ToDoTaskDataModel) =
         ToDoTaskDatabaseModel(
-            input.id,
-            input.title,
-            input.priority,
-            parsePriority(input.description),
-            input.date,
+            id = input.id,
+            title = input.title,
+            description = input.description,
+            priority = parsePriority(input.priority),
+            date = input.date,
         )
 
     private fun parsePriority(priority: String) =
         when (priority) {
-            "High priority" -> {
+            "HIGH" -> {
                 PriorityDatabaseModel.HIGH
             }
 
-            "Medium priority" -> {
+            "MEDIUM" -> {
                 PriorityDatabaseModel.MEDIUM
             }
 
-            "Low priority" -> {
+            "LOW" -> {
                 PriorityDatabaseModel.LOW
             }
 
