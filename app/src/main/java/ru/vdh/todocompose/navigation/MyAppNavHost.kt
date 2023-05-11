@@ -9,10 +9,9 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import ru.vdh.cleanarch.navigation.Screens
 import ru.vdh.todocompose.common.utils.Constants.LIST_SCREEN
-import ru.vdh.todocompose.todotask.navigation.todoTaskComposable
-import ru.vdh.todocompose.todotask.presentation.viewmodel.ToDoTaskViewModel
 import ru.vdh.todocompose.todolist.navigation.todoListComposable
-import ru.vdh.todocompose.todolist.presentation.viewmodel.ToDoListViewModel
+import ru.vdh.todocompose.todolist.navigation.todoTaskComposable
+import ru.vdh.todocompose.todolist.presentation.viewmodel.SharedViewModel
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -20,8 +19,7 @@ fun MyAppNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberAnimatedNavController(),
     onBackClick: () -> Unit,
-    toDoListViewModel: ToDoListViewModel,
-    toDoTaskViewModel: ToDoTaskViewModel
+    sharedViewModel: SharedViewModel,
 ) {
 
     val screen = remember(navController) {
@@ -33,7 +31,15 @@ fun MyAppNavHost(
         navController = navController,
         startDestination = LIST_SCREEN
     ) {
-        todoListComposable(navigateToTaskScreen = screen.list, toDoListViewModel)
-        todoTaskComposable(navigateToListScreen = screen.task, toDoTaskViewModel)
+        todoListComposable(
+            navigateToTaskScreen = screen.list,
+            sharedViewModel,
+            navController
+        )
+        todoTaskComposable(
+            navigateToListScreen = screen.task,
+            sharedViewModel,
+            navController
+        )
     }
 }

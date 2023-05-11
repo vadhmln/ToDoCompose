@@ -1,4 +1,4 @@
-package ru.vdh.todocompose.todotask.components
+package ru.vdh.todocompose.todolist.ui.components
 
 import DisplayAlertDialog
 import androidx.compose.material.*
@@ -21,9 +21,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import ru.vdh.cleanarch.secondfeature.ui.R
 import ru.vdh.todocompose.common.utils.Action
-import ru.vdh.todocompose.todotask.presentation.model.ToDoTaskPresentationModel
+import ru.vdh.todocompose.todolist.presentation.model.ToDoTaskPresentationModel
 
 @Composable
 fun TaskAppBar(

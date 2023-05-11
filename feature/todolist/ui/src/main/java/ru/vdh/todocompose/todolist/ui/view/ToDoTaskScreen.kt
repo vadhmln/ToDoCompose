@@ -1,49 +1,34 @@
-package ru.vdh.todocompose.todotask.ui.view
+package ru.vdh.todocompose.todolist.ui.view
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavController
-import ru.vdh.cleanarch.navigation.Screen
 import ru.vdh.todocompose.common.utils.Action
-import ru.vdh.todocompose.core.presentation.viewmodel.SharedViewModel
-import ru.vdh.todocompose.todotask.components.TaskAppBar
-import ru.vdh.todocompose.todotask.components.TaskContent
-import ru.vdh.todocompose.todotask.presentation.model.ToDoTaskPresentationModel
-import ru.vdh.todocompose.todotask.presentation.viewmodel.ToDoTaskViewModel
+import ru.vdh.todocompose.todolist.presentation.model.ToDoTaskPresentationModel
+import ru.vdh.todocompose.todolist.presentation.viewmodel.SharedViewModel
+import ru.vdh.todocompose.todolist.ui.components.TaskAppBar
+import ru.vdh.todocompose.todolist.ui.components.TaskContent
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ToDoTaskScreen(
     selectedTask: ToDoTaskPresentationModel?,
     navigateToListScreen: (Action) -> Unit,
-    toDoTaskViewModel: ToDoTaskViewModel,
+    sharedViewModel: SharedViewModel,
 ) {
 
     BackHandler {
         navigateToListScreen(Action.NO_ACTION)
     }
 
-    val title: String = toDoTaskViewModel.title
-    val description: String = toDoTaskViewModel.description
-    val priority = toDoTaskViewModel.priority
+    val title: String = sharedViewModel.title
+    val description: String = sharedViewModel.description
+    val priority = sharedViewModel.priority
 
     val context = LocalContext.current
 
@@ -55,7 +40,7 @@ fun ToDoTaskScreen(
                     if (action == Action.NO_ACTION) {
                         navigateToListScreen(action)
                     } else {
-                        if (toDoTaskViewModel.validateFields()) {
+                        if (sharedViewModel.validateFields()) {
                             navigateToListScreen(action)
                         } else {
                             displayToast(context = context)
@@ -68,15 +53,15 @@ fun ToDoTaskScreen(
             TaskContent(
                 title = title,
                 onTitleChange = { title ->
-                    toDoTaskViewModel.updateTitle(title)
+                    sharedViewModel.onTitleUpdate(title)
                 },
                 description = description,
                 onDescriptionChange = { description ->
-                    toDoTaskViewModel.updateDescription(newDescription = description)
+                    sharedViewModel.onDescriptionUpdate(description)
                 },
                 priority = priority,
                 onPrioritySelected = { priority ->
-                    toDoTaskViewModel.updatePriority(newPriority = priority)
+                    sharedViewModel.onPriorityUpdate(priority)
                 },
                 paddingValues = it
             )

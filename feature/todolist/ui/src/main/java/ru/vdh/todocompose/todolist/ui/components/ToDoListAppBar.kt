@@ -1,6 +1,7 @@
 package ru.vdh.todocompose.todolist.ui.components
 
 import DisplayAlertDialog
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -41,11 +42,11 @@ import ru.vdh.todocompose.core.ui.components.PriorityItem
 import ru.vdh.todocompose.core.ui.theme.LARGE_PADDING
 import ru.vdh.todocompose.core.ui.theme.TOP_APP_BAR_HEIGHT
 import ru.vdh.todocompose.todolist.presentation.model.SearchAppBarState
-import ru.vdh.todocompose.todolist.presentation.viewmodel.ToDoListViewModel
+import ru.vdh.todocompose.todolist.presentation.viewmodel.SharedViewModel
 
 @Composable
 fun ListAppBar(
-    toDoListViewModel: ToDoListViewModel,
+    sharedViewModel: SharedViewModel,
     searchAppBarState: SearchAppBarState,
     searchTextState: String
 ) {
@@ -53,13 +54,13 @@ fun ListAppBar(
         SearchAppBarState.CLOSED -> {
             DefaultListAppBar(
                 onSearchClicked = {
-                    toDoListViewModel.updateAppBarState(
+                    sharedViewModel.updateAppBarState(
                         newState = SearchAppBarState.OPENED
                     )
                 },
-                onSortClicked = { toDoListViewModel.persistSortState(it) },
+                onSortClicked = { sharedViewModel.persistSortState(it) },
                 onDeleteAllConfirmed = {
-                    toDoListViewModel.updateAction(newAction = Action.DELETE_ALL)
+                    sharedViewModel.updateAction(newAction = Action.DELETE_ALL)
                 }
             )
         }
@@ -68,13 +69,13 @@ fun ListAppBar(
             SearchAppBar(
                 text = searchTextState,
                 onTextChange = { newText ->
-                    toDoListViewModel.updateSearchText(newText = newText)
+                    sharedViewModel.updateSearchText(newText = newText)
                 },
                 onCloseClicked = {
-                    toDoListViewModel.updateAppBarState(
+                    sharedViewModel.updateAppBarState(
                         newState = SearchAppBarState.CLOSED
                     )
-                    toDoListViewModel.updateSearchText(newText = "")
+                    sharedViewModel.updateSearchText(newText = "")
                 },
                 onSearchClicked = {
 //                    toDoListViewModel.searchDatabase(searchQuery = it)
@@ -171,18 +172,21 @@ fun SortAction(
                 onClick = {
                     expanded = false
                     onSortClicked("LOW")
+                    Log.d("PriorityItem", "LOW!!!")
                 })
             DropdownMenuItem(
                 text = { PriorityItem(priority = "HIGH") },
                 onClick = {
                     expanded = false
                     onSortClicked("HIGH")
+                    Log.d("PriorityItem", "HIGH!!!")
                 })
             DropdownMenuItem(
                 text = { PriorityItem(priority = "NONE") },
                 onClick = {
                     expanded = false
                     onSortClicked("NONE")
+                    Log.d("PriorityItem", "NONE!!!")
                 })
         }
     }

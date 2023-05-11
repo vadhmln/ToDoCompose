@@ -1,4 +1,4 @@
-package ru.vdh.todocompose.todotask.components
+package ru.vdh.todocompose.todolist.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -14,9 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import ru.vdh.todocompose.core.ui.components.PriorityDropDown
-import ru.vdh.todocompose.core.ui.theme.LARGE_PADDING
 import ru.vdh.todocompose.core.ui.theme.MEDIUM_PADDING
 
 @Composable

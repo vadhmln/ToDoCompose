@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +16,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import ru.vdh.todocompose.common.utils.Action
-import ru.vdh.todocompose.core.presentation.viewmodel.SharedViewModel
 import ru.vdh.todocompose.todolist.domain.usecase.AddTaskUseCase
 import ru.vdh.todocompose.todolist.domain.usecase.GetAllTasksUseCase
 import ru.vdh.todocompose.todolist.domain.usecase.GetSelectedTaskUseCase
@@ -29,7 +29,7 @@ import ru.vdh.todocompose.todolist.presentation.model.ToDoTaskPresentationModel
 import javax.inject.Inject
 
 @HiltViewModel
-class ToDoListViewModel @Inject constructor(
+class SharedViewModel @Inject constructor(
     private val getAllTasksUseCase: GetAllTasksUseCase,
     private val sortByLowPriorityUseCase: SortByLowPriorityUseCase,
     private val sortByHighPriorityUseCase: SortByHighPriorityUseCase,
@@ -37,7 +37,16 @@ class ToDoListViewModel @Inject constructor(
     private val addTaskUseCase: AddTaskUseCase,
     private val toDoListDomainToPresentationMapper: ToDoListDomainToPresentationMapper,
     private val toDoListPresentationToDomainMapper: ToDoListPresentationToDomainMapper,
-) : SharedViewModel() {
+) : ViewModel() {
+
+    var id by mutableStateOf(0)
+    var title by mutableStateOf("")
+        private set
+    var description by mutableStateOf("")
+        private set
+    var priority by mutableStateOf("LOW")
+        private set
+    var date by mutableStateOf(0L)
 
     var searchAppBarState by mutableStateOf(SearchAppBarState.CLOSED)
         private set
@@ -52,9 +61,6 @@ class ToDoListViewModel @Inject constructor(
         MutableStateFlow<RequestState<List<ToDoTaskPresentationModel>>>(RequestState.Idle)
     val searchedTasks: StateFlow<RequestState<List<ToDoTaskPresentationModel>>> = _searchedTasks
 
-    private val _selectedTask: MutableStateFlow<ToDoTaskPresentationModel?> = MutableStateFlow(null)
-    val selectedTask: StateFlow<ToDoTaskPresentationModel?> = _selectedTask
-
     private val _sortState =
         MutableStateFlow<RequestState<String>>(RequestState.Idle)
     val sortState: StateFlow<RequestState<String>> = _sortState
@@ -63,6 +69,9 @@ class ToDoListViewModel @Inject constructor(
         getAllTasksUseCase.invoke().map { list ->
             list.map(toDoListDomainToPresentationMapper::toPresentation)
         }
+
+    private val _selectedTask: MutableStateFlow<ToDoTaskPresentationModel?> = MutableStateFlow(null)
+    val selectedTask: StateFlow<ToDoTaskPresentationModel?> = _selectedTask
 
     init {
         getAllTasks()
@@ -93,7 +102,7 @@ class ToDoListViewModel @Inject constructor(
             initialValue = emptyList()
         )
 
-    fun getAllTasks() {
+    private fun getAllTasks() {
         _allTasks.value = RequestState.Loading
         try {
             viewModelScope.launch {
@@ -106,26 +115,17 @@ class ToDoListViewModel @Inject constructor(
         }
     }
 
-    fun getSelectedTask(taskId: Int) {
-        viewModelScope.launch {
-            getSelectedTaskUseCase.invoke(taskId = taskId)
-                .map(toDoListDomainToPresentationMapper::toPresentation).collect { task ->
-                    _selectedTask.value = task
-                }
-        }
-    }
-
     fun updateTaskFields(selectedTask: ToDoTaskPresentationModel?) {
         if (selectedTask != null) {
             id = selectedTask.id
-            title = selectedTask.title
-            description = selectedTask.description
-            priority = selectedTask.priority
+            onTitleUpdate(selectedTask.title)
+            onDescriptionUpdate(selectedTask.description)
+            onPriorityUpdate(selectedTask.priority)
         } else {
             id = 0
-            title = ""
-            description = ""
-            priority = "LOW"
+            onTitleUpdate("")
+            onDescriptionUpdate("")
+            onPriorityUpdate("LOW")
         }
     }
 
@@ -142,15 +142,19 @@ class ToDoListViewModel @Inject constructor(
 
     private fun addTask() {
         viewModelScope.launch(Dispatchers.IO) {
+            val newTitle: String = title
+            val newDescription: String = description
+            val newPriority = priority
+
             val toDoTask = ToDoTaskPresentationModel(
                 id = id,
-                title = title,
-                description = description,
-                priority = priority,
+                title = newTitle,
+                description = newDescription,
+                priority = newPriority,
                 date = System.currentTimeMillis()
             )
             addTaskUseCase.invoke(toDoTask = toDoListPresentationToDomainMapper.toDomain(toDoTask))
-            Log.d("AddTask", "$toDoTask")
+            Log.d("AddTask", "title - $newTitle, description - $newDescription, priority - $newPriority")
         }
 //        searchAppBarState = SearchAppBarState.CLOSED
     }
@@ -187,6 +191,34 @@ class ToDoListViewModel @Inject constructor(
         }
     }
 
+    fun getSelectedTask(taskId: Int) {
+        viewModelScope.launch {
+            getSelectedTaskUseCase.invoke(taskId = taskId)
+                .map(toDoListDomainToPresentationMapper::toPresentation)
+                .collect { task ->
+                    _selectedTask.value = task
+                }
+        }
+    }
+
+
+    fun onTitleUpdate(newTitle: String) {
+        title = newTitle
+        Log.d("onTitleUpdate", "title - $title")
+    }
+
+    fun onDescriptionUpdate(newDescription: String) {
+        description = newDescription
+    }
+
+    fun onPriorityUpdate(newPriority: String) {
+        priority = newPriority
+    }
+
+    fun validateFields(): Boolean {
+        return title.isNotEmpty() && description.isNotEmpty()
+    }
+
     fun handleDatabaseActions(action: Action) {
         when (action) {
             Action.ADD -> {
@@ -218,6 +250,7 @@ class ToDoListViewModel @Inject constructor(
 
     fun updateAction(newAction: Action) {
         action = newAction
+        Log.d("newAction", "$newAction")
     }
 }
 

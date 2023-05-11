@@ -215,6 +215,7 @@ fun DisplayTasks(
                     }
                 )
             }
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
