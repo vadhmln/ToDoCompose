@@ -146,16 +146,15 @@ fun ExistingTaskAppBarActions(
         closeDialog = { openDialog = false },
         onYesClicked = { navigateToListScreen(Action.DELETE) }
     )
-
     DeleteAction(onDeleteClicked = { openDialog = true })
     UpdateAction(onUpdateClicked = navigateToListScreen)
 }
 
 @Composable
 fun DeleteAction(
-    onDeleteClicked: () -> Unit
+    onDeleteClicked: (Action) -> Unit
 ) {
-    IconButton(onClick = { onDeleteClicked() }) {
+    IconButton(onClick = { onDeleteClicked(Action.DELETE) }) {
         Icon(
             imageVector = Icons.Filled.Delete,
             contentDescription = stringResource(id = ru.vdh.cleanarch.core.ui.R.string.delete_icon),

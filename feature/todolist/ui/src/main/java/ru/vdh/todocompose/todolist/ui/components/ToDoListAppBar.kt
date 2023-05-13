@@ -60,7 +60,7 @@ fun ListAppBar(
                 },
                 onSortClicked = { sharedViewModel.persistSortState(it) },
                 onDeleteAllConfirmed = {
-                    sharedViewModel.updateAction(newAction = Action.DELETE_ALL)
+                    sharedViewModel.onUpdateAction(newAction = Action.DELETE_ALL)
                 }
             )
         }
@@ -78,7 +78,7 @@ fun ListAppBar(
                     sharedViewModel.updateSearchText(newText = "")
                 },
                 onSearchClicked = {
-//                    toDoListViewModel.searchDatabase(searchQuery = it)
+                    sharedViewModel.searchDatabase(searchQuery = it)
                 }
             )
         }

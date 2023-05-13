@@ -27,4 +27,16 @@ class ToDoListDataSourceImpl(
         toDoDataSource.addTask(toDoTask)
         Log.d("AddTask", "$toDoTask")
     }
+
+    override suspend fun updateTask(toDoTask: ToDoTaskDataModel) {
+        toDoDataSource.updateTask(toDoTask)
+    }
+
+    override suspend fun deleteTask(toDoTask: ToDoTaskDataModel) {
+        toDoDataSource.deleteTask(toDoTask)
+    }
+
+    override fun searchDatabase(searchQuery: String) =
+        toDoDataSource.searchDatabase(searchQuery)
+
 }

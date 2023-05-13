@@ -37,6 +37,19 @@ class ToDoListRepositoryImpl(
         toDoListDataSource.addTask(toDoListDomainToDataMapper.toData(toDoTask))
         Log.d("AddTask", "$toDoTask")
     }
+
+    override suspend fun updateTask(toDoTask: ToDoTaskDomainModel) {
+        toDoListDataSource.updateTask(toDoListDomainToDataMapper.toData(toDoTask))
+    }
+
+    override suspend fun deleteTask(toDoTask: ToDoTaskDomainModel) {
+        toDoListDataSource.deleteTask(toDoListDomainToDataMapper.toData(toDoTask))
+    }
+
+    override fun searchDatabase(searchQuery: String) =
+        toDoListDataSource.searchDatabase(searchQuery).map { list ->
+            list.map(toDoListDataToDomainMapper::toDomain)
+        }
 }
 
 

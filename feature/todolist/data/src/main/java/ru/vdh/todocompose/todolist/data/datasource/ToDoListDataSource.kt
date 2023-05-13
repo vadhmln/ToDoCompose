@@ -15,4 +15,10 @@ interface ToDoListDataSource {
     fun sortByHighPriority(): Flow<List<ToDoTaskDataModel?>>
 
     suspend fun addTask(toDoTask: ToDoTaskDataModel)
+
+    suspend fun updateTask(toDoTask: ToDoTaskDataModel)
+
+    suspend fun deleteTask(toDoTask: ToDoTaskDataModel)
+
+    fun searchDatabase(searchQuery: String): Flow<List<ToDoTaskDataModel?>>
 }

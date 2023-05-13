@@ -40,12 +40,10 @@ fun NavGraphBuilder.todoListComposable(
         var myAction by rememberSaveable { mutableStateOf(Action.NO_ACTION) }
 
         LaunchedEffect(key1 = myAction) {
-            if (action == myAction) {
-                sharedViewModel.updateAction(newAction = Action.NO_ACTION)
-            } else {
+            if (action != myAction) {
                 myAction = action
-                sharedViewModel.updateAction(newAction = action)
-            }
+                sharedViewModel.onUpdateAction(newAction = action)
+            } else { Action.NO_ACTION }
         }
 
         val databaseAction = sharedViewModel.action

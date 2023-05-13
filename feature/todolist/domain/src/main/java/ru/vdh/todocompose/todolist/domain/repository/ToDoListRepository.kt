@@ -14,4 +14,10 @@ interface ToDoListRepository {
     fun sortByHighPriority(): Flow<List<ToDoTaskDomainModel?>>
 
     suspend fun addTask(toDoTask: ToDoTaskDomainModel)
+
+    suspend fun updateTask(toDoTask: ToDoTaskDomainModel)
+
+    suspend fun deleteTask(toDoTask: ToDoTaskDomainModel)
+
+    fun searchDatabase(searchQuery: String): Flow<List<ToDoTaskDomainModel?>>
 }

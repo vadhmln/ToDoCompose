@@ -17,10 +17,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import ru.vdh.todocompose.common.utils.Action
 import ru.vdh.todocompose.todolist.domain.usecase.AddTaskUseCase
+import ru.vdh.todocompose.todolist.domain.usecase.DeleteTaskUseCase
 import ru.vdh.todocompose.todolist.domain.usecase.GetAllTasksUseCase
 import ru.vdh.todocompose.todolist.domain.usecase.GetSelectedTaskUseCase
+import ru.vdh.todocompose.todolist.domain.usecase.SearchTasksUseCase
 import ru.vdh.todocompose.todolist.domain.usecase.SortByHighPriorityUseCase
 import ru.vdh.todocompose.todolist.domain.usecase.SortByLowPriorityUseCase
+import ru.vdh.todocompose.todolist.domain.usecase.UpdateTaskUseCase
 import ru.vdh.todocompose.todolist.presentation.mapper.ToDoListDomainToPresentationMapper
 import ru.vdh.todocompose.todolist.presentation.mapper.ToDoListPresentationToDomainMapper
 import ru.vdh.todocompose.todolist.presentation.model.RequestState
@@ -35,11 +38,15 @@ class SharedViewModel @Inject constructor(
     private val sortByHighPriorityUseCase: SortByHighPriorityUseCase,
     private val getSelectedTaskUseCase: GetSelectedTaskUseCase,
     private val addTaskUseCase: AddTaskUseCase,
+    private val updateTaskUseCase: UpdateTaskUseCase,
+    private val deleteTaskUseCase: DeleteTaskUseCase,
+    private val searchTasksUseCase: SearchTasksUseCase,
     private val toDoListDomainToPresentationMapper: ToDoListDomainToPresentationMapper,
     private val toDoListPresentationToDomainMapper: ToDoListPresentationToDomainMapper,
 ) : ViewModel() {
 
     var id by mutableStateOf(0)
+        private set
     var title by mutableStateOf("")
         private set
     var description by mutableStateOf("")
@@ -47,6 +54,10 @@ class SharedViewModel @Inject constructor(
     var priority by mutableStateOf("LOW")
         private set
     var date by mutableStateOf(0L)
+
+
+    var action by mutableStateOf(Action.NO_ACTION)
+        private set
 
     var searchAppBarState by mutableStateOf(SearchAppBarState.CLOSED)
         private set
@@ -58,8 +69,8 @@ class SharedViewModel @Inject constructor(
     val allTasks: StateFlow<RequestState<List<ToDoTaskPresentationModel?>>> = _allTasks
 
     private val _searchedTasks =
-        MutableStateFlow<RequestState<List<ToDoTaskPresentationModel>>>(RequestState.Idle)
-    val searchedTasks: StateFlow<RequestState<List<ToDoTaskPresentationModel>>> = _searchedTasks
+        MutableStateFlow<RequestState<List<ToDoTaskPresentationModel?>>>(RequestState.Idle)
+    val searchedTasks: StateFlow<RequestState<List<ToDoTaskPresentationModel?>>> = _searchedTasks
 
     private val _sortState =
         MutableStateFlow<RequestState<String>>(RequestState.Idle)
@@ -76,6 +87,37 @@ class SharedViewModel @Inject constructor(
     init {
         getAllTasks()
         Log.e("AAA", "ToDoListViewModel created!!!")
+    }
+
+    private fun getAllTasks() {
+        _allTasks.value = RequestState.Loading
+        try {
+            viewModelScope.launch {
+                getAllTasksUseCase.invoke().map { list ->
+                    list.map(toDoListDomainToPresentationMapper::toPresentation)
+                }.collect {
+                    _allTasks.value = RequestState.Success(it)
+                }
+            }
+        } catch (e: Exception) {
+            _allTasks.value = RequestState.Error(e)
+        }
+    }
+
+    fun searchDatabase(searchQuery: String) {
+        _searchedTasks.value = RequestState.Loading
+        try {
+            viewModelScope.launch {
+                searchTasksUseCase.invoke(searchQuery = "%$searchQuery%").map { list ->
+                    list.map(toDoListDomainToPresentationMapper::toPresentation)
+                }.collect { searchedTasks ->
+                        _searchedTasks.value = RequestState.Success(searchedTasks)
+                    }
+            }
+        } catch (e: Exception) {
+            _searchedTasks.value = RequestState.Error(e)
+        }
+        searchAppBarState = SearchAppBarState.TRIGGERED
     }
 
     fun persistSortState(priority: String) {
@@ -102,19 +144,6 @@ class SharedViewModel @Inject constructor(
             initialValue = emptyList()
         )
 
-    private fun getAllTasks() {
-        _allTasks.value = RequestState.Loading
-        try {
-            viewModelScope.launch {
-                getAllTasks.collect {
-                    _allTasks.value = RequestState.Success(it)
-                }
-            }
-        } catch (e: Exception) {
-            _allTasks.value = RequestState.Error(e)
-        }
-    }
-
     fun updateTaskFields(selectedTask: ToDoTaskPresentationModel?) {
         if (selectedTask != null) {
             id = selectedTask.id
@@ -137,9 +166,6 @@ class SharedViewModel @Inject constructor(
         searchTextState = newText
     }
 
-    var action by mutableStateOf(Action.NO_ACTION)
-        private set
-
     private fun addTask() {
         viewModelScope.launch(Dispatchers.IO) {
             val newTitle: String = title
@@ -154,9 +180,12 @@ class SharedViewModel @Inject constructor(
                 date = System.currentTimeMillis()
             )
             addTaskUseCase.invoke(toDoTask = toDoListPresentationToDomainMapper.toDomain(toDoTask))
-            Log.d("AddTask", "title - $newTitle, description - $newDescription, priority - $newPriority")
+            Log.d(
+                "AddTask",
+                "title - $newTitle, description - $newDescription, priority - $newPriority"
+            )
         }
-//        searchAppBarState = SearchAppBarState.CLOSED
+        searchAppBarState = SearchAppBarState.CLOSED
     }
 
     private fun updateTask() {
@@ -168,7 +197,7 @@ class SharedViewModel @Inject constructor(
                 priority = priority,
                 date = date
             )
-//            repository.updateTask(toDoTask = toDoTask)
+            updateTaskUseCase.invoke(toDoTask = toDoListPresentationToDomainMapper.toDomain(toDoTask))
         }
     }
 
@@ -181,7 +210,7 @@ class SharedViewModel @Inject constructor(
                 priority = priority,
                 date = date
             )
-//            repository.deleteTask(toDoTask = toDoTask)
+            deleteTaskUseCase.invoke(toDoTask = toDoListPresentationToDomainMapper.toDomain(toDoTask))
         }
     }
 
@@ -223,7 +252,7 @@ class SharedViewModel @Inject constructor(
         when (action) {
             Action.ADD -> {
                 addTask()
-                Log.d("AddTask", "addTask()!!!")
+                Log.d("Action", "addTask()!!!")
             }
 
             Action.UPDATE -> {
@@ -232,6 +261,7 @@ class SharedViewModel @Inject constructor(
 
             Action.DELETE -> {
                 deleteTask()
+                Log.d("Action", "deleteTask()!!!")
             }
 
             Action.DELETE_ALL -> {
@@ -240,6 +270,7 @@ class SharedViewModel @Inject constructor(
 
             Action.UNDO -> {
                 addTask()
+                Log.d("Action", "undoTask()!!!")
             }
 
             else -> {
@@ -248,7 +279,7 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    fun updateAction(newAction: Action) {
+    fun onUpdateAction(newAction: Action) {
         action = newAction
         Log.d("newAction", "$newAction")
     }
