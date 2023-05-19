@@ -36,6 +36,10 @@ class ToDoListDataSourceImpl(
         toDoDataSource.deleteTask(toDoTask)
     }
 
+    override suspend fun deleteAllTasks() {
+        toDoDataSource.deleteAllTasks()
+    }
+
     override fun searchDatabase(searchQuery: String) =
         toDoDataSource.searchDatabase(searchQuery)
 

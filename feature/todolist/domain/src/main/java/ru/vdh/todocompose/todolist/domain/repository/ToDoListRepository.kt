@@ -19,5 +19,7 @@ interface ToDoListRepository {
 
     suspend fun deleteTask(toDoTask: ToDoTaskDomainModel)
 
+    suspend fun deleteAllTasks()
+
     fun searchDatabase(searchQuery: String): Flow<List<ToDoTaskDomainModel?>>
 }

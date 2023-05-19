@@ -17,9 +17,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import ru.vdh.todocompose.common.utils.Action
 import ru.vdh.todocompose.todolist.domain.usecase.AddTaskUseCase
+import ru.vdh.todocompose.todolist.domain.usecase.DeleteAllTaskUseCase
 import ru.vdh.todocompose.todolist.domain.usecase.DeleteTaskUseCase
 import ru.vdh.todocompose.todolist.domain.usecase.GetAllTasksUseCase
 import ru.vdh.todocompose.todolist.domain.usecase.GetSelectedTaskUseCase
+import ru.vdh.todocompose.todolist.domain.usecase.PersistSortStateUseCase
+import ru.vdh.todocompose.todolist.domain.usecase.ReadSortStateUseCase
 import ru.vdh.todocompose.todolist.domain.usecase.SearchTasksUseCase
 import ru.vdh.todocompose.todolist.domain.usecase.SortByHighPriorityUseCase
 import ru.vdh.todocompose.todolist.domain.usecase.SortByLowPriorityUseCase
@@ -41,6 +44,9 @@ class SharedViewModel @Inject constructor(
     private val updateTaskUseCase: UpdateTaskUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
     private val searchTasksUseCase: SearchTasksUseCase,
+    private val deleteAllTaskUseCase: DeleteAllTaskUseCase,
+    private val readSortStateUseCase: ReadSortStateUseCase,
+    private val persistSortStateUseCase: PersistSortStateUseCase,
     private val toDoListDomainToPresentationMapper: ToDoListDomainToPresentationMapper,
     private val toDoListPresentationToDomainMapper: ToDoListPresentationToDomainMapper,
 ) : ViewModel() {
@@ -76,17 +82,12 @@ class SharedViewModel @Inject constructor(
         MutableStateFlow<RequestState<String>>(RequestState.Idle)
     val sortState: StateFlow<RequestState<String>> = _sortState
 
-    private val getAllTasks: Flow<List<ToDoTaskPresentationModel?>> =
-        getAllTasksUseCase.invoke().map { list ->
-            list.map(toDoListDomainToPresentationMapper::toPresentation)
-        }
-
     private val _selectedTask: MutableStateFlow<ToDoTaskPresentationModel?> = MutableStateFlow(null)
     val selectedTask: StateFlow<ToDoTaskPresentationModel?> = _selectedTask
 
     init {
         getAllTasks()
-        Log.e("AAA", "ToDoListViewModel created!!!")
+        readSortState()
     }
 
     private fun getAllTasks() {
@@ -120,9 +121,23 @@ class SharedViewModel @Inject constructor(
         searchAppBarState = SearchAppBarState.TRIGGERED
     }
 
+    private fun readSortState() {
+        _sortState.value = RequestState.Loading
+        try {
+            viewModelScope.launch {
+                readSortStateUseCase.invoke()
+                    .collect {
+                        _sortState.value = RequestState.Success(it)
+                    }
+            }
+        } catch (e: Exception) {
+            _sortState.value = RequestState.Error(e)
+        }
+    }
+
     fun persistSortState(priority: String) {
         viewModelScope.launch(Dispatchers.IO) {
-//            dataStoreRepository.persistSortState(priority = priority)
+            persistSortStateUseCase.invoke(priority = priority)
         }
     }
 
@@ -216,7 +231,7 @@ class SharedViewModel @Inject constructor(
 
     private fun deleteAllTasks() {
         viewModelScope.launch(Dispatchers.IO) {
-//            repository.deleteAllTasks()
+            deleteAllTaskUseCase.invoke()
         }
     }
 
@@ -229,7 +244,6 @@ class SharedViewModel @Inject constructor(
                 }
         }
     }
-
 
     fun onTitleUpdate(newTitle: String) {
         title = newTitle

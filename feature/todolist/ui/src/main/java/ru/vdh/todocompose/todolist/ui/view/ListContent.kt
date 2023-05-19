@@ -65,37 +65,49 @@ fun ListContent(
     paddingValues: PaddingValues
 ) {
 
-    if (searchAppBarState == SearchAppBarState.TRIGGERED) {
-        if (searchedTasks is RequestState.Success) {
-            HandleListContent(
-                tasks = searchedTasks.data,
-                onSwipeToDelete = onSwipeToDelete,
-                navigateToTaskScreen = navigateToTaskScreen,
-                paddingValues = paddingValues
-            )
-        }
-    } else {
-        if (allTasks is RequestState.Success) {
-            HandleListContent(
-                tasks = allTasks.data,
-                onSwipeToDelete = onSwipeToDelete,
-                navigateToTaskScreen = navigateToTaskScreen,
-                paddingValues = paddingValues
-            )
+    if (sortState is RequestState.Success) {
+        when {
+            searchAppBarState == SearchAppBarState.TRIGGERED -> {
+                if (searchedTasks is RequestState.Success) {
+                    HandleListContent(
+                        tasks = searchedTasks.data,
+                        onSwipeToDelete = onSwipeToDelete,
+                        navigateToTaskScreen = navigateToTaskScreen,
+                        paddingValues = paddingValues
+                    )
+                }
+            }
+
+            sortState.data == "NONE" -> {
+                if (allTasks is RequestState.Success) {
+                    HandleListContent(
+                        tasks = allTasks.data,
+                        onSwipeToDelete = onSwipeToDelete,
+                        navigateToTaskScreen = navigateToTaskScreen,
+                        paddingValues = paddingValues
+                    )
+                }
+            }
+
+            sortState.data == "LOW" -> {
+                HandleListContent(
+                    tasks = lowPriorityTasks,
+                    onSwipeToDelete = onSwipeToDelete,
+                    navigateToTaskScreen = navigateToTaskScreen,
+                    paddingValues = paddingValues
+                )
+            }
+
+            sortState.data == "HIGH" -> {
+                HandleListContent(
+                    tasks = highPriorityTasks,
+                    onSwipeToDelete = onSwipeToDelete,
+                    navigateToTaskScreen = navigateToTaskScreen,
+                    paddingValues = paddingValues
+                )
+            }
         }
     }
-
-//    if (allTasks is RequestState.Success) {
-//        if (allTasks.data.isEmpty()) {
-//            EmptyContent()
-//        } else DisplayTasks(
-//            tasks = allTasks.data,
-//            onSwipeToDelete = onSwipeToDelete,
-//            navigateToTaskScreen = navigateToTaskScreen,
-//            paddingValues = paddingValues
-//        )
-//    }
-
 }
 
 @ExperimentalAnimationApi
@@ -108,7 +120,6 @@ fun HandleListContent(
 ) {
     if (tasks.isEmpty()) {
         EmptyContent()
-        Log.d("ListContent", "tasks.isEmpty()")
     } else {
         DisplayTasks(
             tasks = tasks,
@@ -116,7 +127,6 @@ fun HandleListContent(
             navigateToTaskScreen = navigateToTaskScreen,
             paddingValues = paddingValues
         )
-        Log.d("ListContent", "else")
     }
 }
 

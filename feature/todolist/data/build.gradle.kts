@@ -34,11 +34,14 @@ android {
 }
 
 dependencies {
-
+    implementation(project(":common"))
     implementation(project(":feature:todolist:domain"))
     implementation(project(":core:data"))
 
     implementation(libs.kotlinx.coroutines.android)
+
+    // DataStore Preferences
+    implementation(libs.androidx.datastore.preferences)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

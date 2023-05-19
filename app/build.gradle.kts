@@ -96,6 +96,9 @@ dependencies {
     implementation(libs.room.ktx)
     androidTestImplementation(libs.room.testing)
 
+    // DataStore Preferences
+    implementation(libs.androidx.datastore.preferences)
+
     //Hilt
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)

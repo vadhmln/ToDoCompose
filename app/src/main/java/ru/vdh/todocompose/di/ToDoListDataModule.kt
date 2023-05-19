@@ -31,7 +31,7 @@ class ToDoListDataModule {
 
     @Provides
     @Singleton
-    fun provideNewFeatureRepository(
+    fun provideToDoListRepository(
         toDoListDataSource: ToDoListDataSource,
         toDoListDataToDomainMapper: ToDoListDataToDomainMapper,
         toDoListDomainToDataMapper: ToDoListDomainToDataMapper

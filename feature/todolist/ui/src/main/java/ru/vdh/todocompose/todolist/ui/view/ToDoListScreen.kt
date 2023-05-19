@@ -144,19 +144,15 @@ fun DisplaySnackBar(
     }
 }
 
-private fun setMessage(action: Action, taskTitle: String): String {
-    return when (action) {
-        Action.DELETE_ALL -> "All Tasks Removed."
-        else -> "${action.name}: $taskTitle"
-    }
+private fun setMessage(action: Action, taskTitle: String) = when (action) {
+    Action.DELETE_ALL -> "All Tasks Removed."
+    else -> "${action.name}: $taskTitle"
 }
 
-private fun setActionLabel(action: Action): String {
-    return if (action.name == "DELETE") {
-        "UNDO"
-    } else {
-        "OK"
-    }
+private fun setActionLabel(action: Action) = if (action.name == "DELETE") {
+    "UNDO"
+} else {
+    "OK"
 }
 
 private fun undoDeletedTask(

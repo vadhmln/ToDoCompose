@@ -20,5 +20,7 @@ interface ToDoListDataSource {
 
     suspend fun deleteTask(toDoTask: ToDoTaskDataModel)
 
+    suspend fun deleteAllTasks()
+
     fun searchDatabase(searchQuery: String): Flow<List<ToDoTaskDataModel?>>
 }

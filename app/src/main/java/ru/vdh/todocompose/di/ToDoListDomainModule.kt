@@ -1,16 +1,22 @@
 package ru.vdh.todocompose.di
 
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import ru.vdh.todocompose.core.domain.coroutine.CoroutineContextProvider
-import ru.vdh.todocompose.secondfeature.domain.repository.ToDoTaskRepository
+import ru.vdh.todocompose.todolist.data.repository.DataStoreRepositoryImpl
+import ru.vdh.todocompose.todolist.domain.repository.DataStoreRepository
 import ru.vdh.todocompose.todolist.domain.repository.ToDoListRepository
 import ru.vdh.todocompose.todolist.domain.usecase.AddTaskUseCase
+import ru.vdh.todocompose.todolist.domain.usecase.DeleteAllTaskUseCase
 import ru.vdh.todocompose.todolist.domain.usecase.DeleteTaskUseCase
 import ru.vdh.todocompose.todolist.domain.usecase.GetAllTasksUseCase
 import ru.vdh.todocompose.todolist.domain.usecase.GetSelectedTaskUseCase
+import ru.vdh.todocompose.todolist.domain.usecase.PersistSortStateUseCase
+import ru.vdh.todocompose.todolist.domain.usecase.ReadSortStateUseCase
 import ru.vdh.todocompose.todolist.domain.usecase.SearchTasksUseCase
 import ru.vdh.todocompose.todolist.domain.usecase.SortByHighPriorityUseCase
 import ru.vdh.todocompose.todolist.domain.usecase.SortByLowPriorityUseCase
@@ -84,4 +90,32 @@ class ToDoListDomainModule {
         SearchTasksUseCase(
             toDoListRepository = toDoListRepository,
         )
+
+    @Provides
+    fun provideDeleteAllTaskUseCase(
+        toDoListRepository: ToDoListRepository,
+    ): DeleteAllTaskUseCase =
+        DeleteAllTaskUseCase(
+            toDoListRepository = toDoListRepository,
+        )
+
+    @Provides
+    fun provideReadSortStateUseCase(
+        dataStoreRepository: DataStoreRepository,
+    ): ReadSortStateUseCase =
+        ReadSortStateUseCase(
+            dataStoreRepository = dataStoreRepository,
+        )
+
+    @Provides
+    fun providePersistSortStateUseCase(
+        dataStoreRepository: DataStoreRepository,
+    ): PersistSortStateUseCase =
+        PersistSortStateUseCase(
+            dataStoreRepository = dataStoreRepository,
+        )
+
+    @Provides
+    fun provideDataStoreRepository(@ApplicationContext context: Context): DataStoreRepository =
+        DataStoreRepositoryImpl(context = context)
 }

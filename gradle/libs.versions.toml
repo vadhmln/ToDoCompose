@@ -35,6 +35,8 @@ hiltAndroidGradlePlugin = "2.44.2"
 hiltAndroidCompiler = "2.44"
 hiltNavigationCompose = "1.0.0"
 
+datastorePreferences = "1.0.0"
+
 #Testing
 testCore = "1.5.0"
 junitKtx = "1.1.5"
@@ -52,6 +54,7 @@ hiltLifecycle = "1.0.0-alpha03"
 
 #Android
 accompanist-navigation-animation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanistNavigationAnimation" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
