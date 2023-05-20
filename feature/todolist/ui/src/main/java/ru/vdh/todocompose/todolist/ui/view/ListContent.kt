@@ -50,6 +50,7 @@ import ru.vdh.todocompose.core.ui.theme.TASK_ITEM_ELEVATION
 import ru.vdh.todocompose.todolist.presentation.model.RequestState
 import ru.vdh.todocompose.todolist.presentation.model.SearchAppBarState
 import ru.vdh.todocompose.todolist.presentation.model.ToDoTaskPresentationModel
+import ru.vdh.todocompose.todolist.presentation.viewmodel.SharedViewModel
 
 @ExperimentalAnimationApi
 @Composable
@@ -62,9 +63,9 @@ fun ListContent(
     searchAppBarState: SearchAppBarState,
     onSwipeToDelete: (Action, ToDoTaskPresentationModel?) -> Unit,
     navigateToTaskScreen: (taskId: Int) -> Unit,
+    sharedViewModel: SharedViewModel,
     paddingValues: PaddingValues
 ) {
-
     if (sortState is RequestState.Success) {
         when {
             searchAppBarState == SearchAppBarState.TRIGGERED -> {
@@ -73,6 +74,7 @@ fun ListContent(
                         tasks = searchedTasks.data,
                         onSwipeToDelete = onSwipeToDelete,
                         navigateToTaskScreen = navigateToTaskScreen,
+                        sharedViewModel = sharedViewModel,
                         paddingValues = paddingValues
                     )
                 }
@@ -84,6 +86,7 @@ fun ListContent(
                         tasks = allTasks.data,
                         onSwipeToDelete = onSwipeToDelete,
                         navigateToTaskScreen = navigateToTaskScreen,
+                        sharedViewModel = sharedViewModel,
                         paddingValues = paddingValues
                     )
                 }
@@ -94,6 +97,7 @@ fun ListContent(
                     tasks = lowPriorityTasks,
                     onSwipeToDelete = onSwipeToDelete,
                     navigateToTaskScreen = navigateToTaskScreen,
+                    sharedViewModel = sharedViewModel,
                     paddingValues = paddingValues
                 )
             }
@@ -103,6 +107,7 @@ fun ListContent(
                     tasks = highPriorityTasks,
                     onSwipeToDelete = onSwipeToDelete,
                     navigateToTaskScreen = navigateToTaskScreen,
+                    sharedViewModel = sharedViewModel,
                     paddingValues = paddingValues
                 )
             }
@@ -116,6 +121,7 @@ fun HandleListContent(
     tasks: List<ToDoTaskPresentationModel?>,
     onSwipeToDelete: (Action, ToDoTaskPresentationModel?) -> Unit,
     navigateToTaskScreen: (taskId: Int) -> Unit,
+    sharedViewModel: SharedViewModel,
     paddingValues: PaddingValues
 ) {
     if (tasks.isEmpty()) {
@@ -125,6 +131,7 @@ fun HandleListContent(
             tasks = tasks,
             onSwipeToDelete = onSwipeToDelete,
             navigateToTaskScreen = navigateToTaskScreen,
+            sharedViewModel = sharedViewModel,
             paddingValues = paddingValues
         )
     }
@@ -137,6 +144,7 @@ fun DisplayTasks(
     tasks: List<ToDoTaskPresentationModel?>,
     onSwipeToDelete: (Action, ToDoTaskPresentationModel?) -> Unit,
     navigateToTaskScreen: (taskId: Int) -> Unit,
+    sharedViewModel: SharedViewModel,
     paddingValues: PaddingValues
 ) {
     LazyColumn(modifier = Modifier.padding(top = paddingValues.calculateTopPadding())) {
@@ -146,7 +154,6 @@ fun DisplayTasks(
                 task?.id ?: 0
             }
         ) { task ->
-
             val dismissState = rememberDismissState()
             val dismissDirection = dismissState.dismissDirection
             val isDismissed = dismissState.isDismissed(DismissDirection.EndToStart)

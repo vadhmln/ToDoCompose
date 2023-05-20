@@ -90,7 +90,7 @@ class SharedViewModel @Inject constructor(
         readSortState()
     }
 
-    private fun getAllTasks() {
+    fun getAllTasks() {
         _allTasks.value = RequestState.Loading
         try {
             viewModelScope.launch {
@@ -121,7 +121,7 @@ class SharedViewModel @Inject constructor(
         searchAppBarState = SearchAppBarState.TRIGGERED
     }
 
-    private fun readSortState() {
+    fun readSortState() {
         _sortState.value = RequestState.Loading
         try {
             viewModelScope.launch {
@@ -266,7 +266,6 @@ class SharedViewModel @Inject constructor(
         when (action) {
             Action.ADD -> {
                 addTask()
-                Log.d("Action", "addTask()!!!")
             }
 
             Action.UPDATE -> {
@@ -275,7 +274,6 @@ class SharedViewModel @Inject constructor(
 
             Action.DELETE -> {
                 deleteTask()
-                Log.d("Action", "deleteTask()!!!")
             }
 
             Action.DELETE_ALL -> {
@@ -284,11 +282,9 @@ class SharedViewModel @Inject constructor(
 
             Action.UNDO -> {
                 addTask()
-                Log.d("Action", "undoTask()!!!")
             }
 
             else -> {
-                Action.NO_ACTION
             }
         }
     }

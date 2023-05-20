@@ -152,9 +152,9 @@ fun ExistingTaskAppBarActions(
 
 @Composable
 fun DeleteAction(
-    onDeleteClicked: (Action) -> Unit
+    onDeleteClicked: () -> Unit
 ) {
-    IconButton(onClick = { onDeleteClicked(Action.DELETE) }) {
+    IconButton(onClick = { onDeleteClicked() }) {
         Icon(
             imageVector = Icons.Filled.Delete,
             contentDescription = stringResource(id = ru.vdh.cleanarch.core.ui.R.string.delete_icon),
