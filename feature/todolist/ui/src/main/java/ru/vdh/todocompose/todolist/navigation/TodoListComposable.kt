@@ -1,7 +1,6 @@
 package ru.vdh.todocompose.todolist.navigation
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,7 +34,6 @@ fun NavGraphBuilder.todoListComposable(
     ) { navBackStackEntry ->
 
         val action = navBackStackEntry.arguments?.getString(LIST_ARGUMENT_KEY).toAction()
-        Log.d("todoListComposable", action.name)
 
         var myAction by rememberSaveable { mutableStateOf(Action.NO_ACTION) }
 

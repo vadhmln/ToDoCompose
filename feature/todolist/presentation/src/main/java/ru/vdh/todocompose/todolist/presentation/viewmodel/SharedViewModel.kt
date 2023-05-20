@@ -2,20 +2,20 @@ package ru.vdh.todocompose.todolist.presentation.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import ru.vdh.todocompose.common.utils.Action
+import ru.vdh.todocompose.common.utils.Constants.MAX_TITLE_LENGTH
 import ru.vdh.todocompose.todolist.domain.usecase.AddTaskUseCase
 import ru.vdh.todocompose.todolist.domain.usecase.DeleteAllTaskUseCase
 import ru.vdh.todocompose.todolist.domain.usecase.DeleteTaskUseCase
@@ -85,26 +85,6 @@ class SharedViewModel @Inject constructor(
     private val _selectedTask: MutableStateFlow<ToDoTaskPresentationModel?> = MutableStateFlow(null)
     val selectedTask: StateFlow<ToDoTaskPresentationModel?> = _selectedTask
 
-    init {
-        getAllTasks()
-        readSortState()
-    }
-
-    fun getAllTasks() {
-        _allTasks.value = RequestState.Loading
-        try {
-            viewModelScope.launch {
-                getAllTasksUseCase.invoke().map { list ->
-                    list.map(toDoListDomainToPresentationMapper::toPresentation)
-                }.collect {
-                    _allTasks.value = RequestState.Success(it)
-                }
-            }
-        } catch (e: Exception) {
-            _allTasks.value = RequestState.Error(e)
-        }
-    }
-
     fun searchDatabase(searchQuery: String) {
         _searchedTasks.value = RequestState.Loading
         try {
@@ -112,14 +92,32 @@ class SharedViewModel @Inject constructor(
                 searchTasksUseCase.invoke(searchQuery = "%$searchQuery%").map { list ->
                     list.map(toDoListDomainToPresentationMapper::toPresentation)
                 }.collect { searchedTasks ->
-                        _searchedTasks.value = RequestState.Success(searchedTasks)
-                    }
+                    _searchedTasks.value = RequestState.Success(searchedTasks)
+                }
             }
         } catch (e: Exception) {
             _searchedTasks.value = RequestState.Error(e)
         }
         searchAppBarState = SearchAppBarState.TRIGGERED
     }
+
+    val lowPriorityTasks: StateFlow<List<ToDoTaskPresentationModel?>> =
+        sortByLowPriorityUseCase.invoke().map { list ->
+            list.map(toDoListDomainToPresentationMapper::toPresentation)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = emptyList()
+        )
+
+    val highPriorityTasks: StateFlow<List<ToDoTaskPresentationModel?>> =
+        sortByHighPriorityUseCase.invoke().map { list ->
+            list.map(toDoListDomainToPresentationMapper::toPresentation)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = emptyList()
+        )
 
     fun readSortState() {
         _sortState.value = RequestState.Loading
@@ -141,64 +139,42 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    val lowPriorityTasks: StateFlow<List<ToDoTaskPresentationModel?>> =
-        sortByLowPriorityUseCase.invoke().map { list ->
-            list.map(toDoListDomainToPresentationMapper::toPresentation)
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = emptyList()
-        )
-
-    val highPriorityTasks: StateFlow<List<ToDoTaskPresentationModel?>> =
-        sortByHighPriorityUseCase.invoke().map { list ->
-            list.map(toDoListDomainToPresentationMapper::toPresentation)
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = emptyList()
-        )
-
-    fun updateTaskFields(selectedTask: ToDoTaskPresentationModel?) {
-        if (selectedTask != null) {
-            id = selectedTask.id
-            onTitleUpdate(selectedTask.title)
-            onDescriptionUpdate(selectedTask.description)
-            onPriorityUpdate(selectedTask.priority)
-        } else {
-            id = 0
-            onTitleUpdate("")
-            onDescriptionUpdate("")
-            onPriorityUpdate("LOW")
+    fun getAllTasks() {
+        _allTasks.value = RequestState.Loading
+        try {
+            viewModelScope.launch {
+                getAllTasksUseCase.invoke().map { list ->
+                    list.map(toDoListDomainToPresentationMapper::toPresentation)
+                }.collect {
+                    _allTasks.value = RequestState.Success(it)
+                }
+            }
+        } catch (e: Exception) {
+            _allTasks.value = RequestState.Error(e)
         }
     }
 
-    fun updateAppBarState(newState: SearchAppBarState) {
-        searchAppBarState = newState
-    }
-
-    fun updateSearchText(newText: String) {
-        searchTextState = newText
+    fun getSelectedTask(taskId: Int) {
+        viewModelScope.launch {
+            getSelectedTaskUseCase.invoke(taskId = taskId)
+                .map(toDoListDomainToPresentationMapper::toPresentation)
+                .collect { task ->
+                    _selectedTask.value = task
+                }
+        }
     }
 
     private fun addTask() {
         viewModelScope.launch(Dispatchers.IO) {
-            val newTitle: String = title
-            val newDescription: String = description
-            val newPriority = priority
-
             val toDoTask = ToDoTaskPresentationModel(
                 id = id,
-                title = newTitle,
-                description = newDescription,
-                priority = newPriority,
+                title = title,
+                description = description,
+                priority = priority,
                 date = System.currentTimeMillis()
+
             )
             addTaskUseCase.invoke(toDoTask = toDoListPresentationToDomainMapper.toDomain(toDoTask))
-            Log.d(
-                "AddTask",
-                "title - $newTitle, description - $newDescription, priority - $newPriority"
-            )
         }
         searchAppBarState = SearchAppBarState.CLOSED
     }
@@ -235,14 +211,52 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    fun getSelectedTask(taskId: Int) {
-        viewModelScope.launch {
-            getSelectedTaskUseCase.invoke(taskId = taskId)
-                .map(toDoListDomainToPresentationMapper::toPresentation)
-                .collect { task ->
-                    _selectedTask.value = task
-                }
+    fun handleDatabaseActions(action: Action) {
+        when (action) {
+            Action.ADD -> {
+                addTask()
+            }
+            Action.UPDATE -> {
+                updateTask()
+            }
+            Action.DELETE -> {
+                deleteTask()
+            }
+            Action.DELETE_ALL -> {
+                deleteAllTasks()
+            }
+            Action.UNDO -> {
+                addTask()
+            }
+            else -> {
+
+            }
         }
+        this.action = Action.NO_ACTION
+    }
+
+    fun updateTaskFields(selectedTask: ToDoTaskPresentationModel?) {
+        if (selectedTask != null) {
+            id = selectedTask.id
+            onTitleUpdate(selectedTask.title)
+            onDescriptionUpdate(selectedTask.description)
+            onPriorityUpdate(selectedTask.priority)
+        } else {
+            id = 0
+            onTitleUpdate("")
+            onDescriptionUpdate("")
+            onPriorityUpdate("LOW")
+        }
+    }
+
+    fun updateTitle(newTitle: String) {
+        if (newTitle.length < MAX_TITLE_LENGTH) {
+            title = newTitle
+        }
+    }
+
+    fun validateFields(): Boolean {
+        return title.isNotEmpty() && description.isNotEmpty()
     }
 
     fun onTitleUpdate(newTitle: String) {
@@ -258,41 +272,8 @@ class SharedViewModel @Inject constructor(
         priority = newPriority
     }
 
-    fun validateFields(): Boolean {
-        return title.isNotEmpty() && description.isNotEmpty()
-    }
-
-    fun handleDatabaseActions(action: Action) {
-        when (action) {
-            Action.ADD -> {
-                addTask()
-            }
-
-            Action.UPDATE -> {
-                updateTask()
-            }
-
-            Action.DELETE -> {
-                deleteTask()
-            }
-
-            Action.DELETE_ALL -> {
-                deleteAllTasks()
-            }
-
-            Action.UNDO -> {
-                addTask()
-            }
-
-            else -> {
-            }
-        }
-    }
-
     fun onUpdateAction(newAction: Action) {
         action = newAction
-        Log.d("newAction", "$newAction")
     }
+
 }
-
-
