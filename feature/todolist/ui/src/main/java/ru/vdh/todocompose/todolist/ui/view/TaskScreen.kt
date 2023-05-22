@@ -2,11 +2,10 @@ package ru.vdh.todocompose.todolist.ui.view
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import ru.vdh.todocompose.common.utils.Action
 import ru.vdh.todocompose.todolist.presentation.model.ToDoTaskPresentationModel
@@ -16,19 +15,14 @@ import ru.vdh.todocompose.todolist.ui.components.TaskContent
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ToDoTaskScreen(
+fun TaskScreen(
     selectedTask: ToDoTaskPresentationModel?,
-    navigateToListScreen: (Action) -> Unit,
     sharedViewModel: SharedViewModel,
+    navigateToListScreen: (Action) -> Unit
 ) {
-
-    BackHandler {
-        navigateToListScreen(Action.NO_ACTION)
-    }
-
-    val title: String = sharedViewModel.title
-    val description: String = sharedViewModel.description
-    val priority = sharedViewModel.priority
+    val title: String by sharedViewModel.title
+    val description: String by sharedViewModel.description
+    val priority: String by sharedViewModel.priority
 
     val context = LocalContext.current
 
@@ -52,20 +46,19 @@ fun ToDoTaskScreen(
         content = {
             TaskContent(
                 title = title,
-                onTitleChange = { title ->
-                    sharedViewModel.onTitleUpdate(title)
+                onTitleChange = {
+                    sharedViewModel.updateTitle(it)
                 },
                 description = description,
-                onDescriptionChange = { description ->
-                    sharedViewModel.onDescriptionUpdate(description)
+                onDescriptionChange = {
+                    sharedViewModel.description.value = it
                 },
                 priority = priority,
-                onPrioritySelected = { priority ->
-                    sharedViewModel.onPriorityUpdate(priority)
+                onPrioritySelected = {
+                    sharedViewModel.priority.value = it
                 },
                 paddingValues = it
             )
-                Log.d("TaskContentTitle", title)
         }
     )
 }
@@ -77,5 +70,3 @@ fun displayToast(context: Context) {
         Toast.LENGTH_SHORT
     ).show()
 }
-
-

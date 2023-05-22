@@ -1,7 +1,5 @@
 package ru.vdh.todocompose.todolist.navigation
 
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -14,7 +12,6 @@ import ru.vdh.todocompose.common.utils.toAction
 import ru.vdh.todocompose.todolist.presentation.viewmodel.SharedViewModel
 import ru.vdh.todocompose.todolist.ui.view.ListScreen
 
-@ExperimentalAnimationApi
 fun NavGraphBuilder.listComposable(
     navigateToTaskScreen: (taskId: Int) -> Unit,
     sharedViewModel: SharedViewModel,

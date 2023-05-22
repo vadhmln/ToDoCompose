@@ -2,7 +2,6 @@ package ru.vdh.todocompose.todolist.ui.view
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -22,8 +21,8 @@ import ru.vdh.todocompose.todolist.presentation.model.SearchAppBarState
 import ru.vdh.todocompose.todolist.presentation.viewmodel.SharedViewModel
 import ru.vdh.todocompose.todolist.ui.components.ListAppBar
 
+@OptIn(ExperimentalAnimationApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
-@ExperimentalAnimationApi
 @Composable
 fun ListScreen(
     action: Action,

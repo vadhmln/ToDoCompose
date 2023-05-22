@@ -1,6 +1,6 @@
 package ru.vdh.todocompose.todolist.presentation.viewmodel
 
-import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,11 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.vdh.todocompose.common.utils.Action
 import ru.vdh.todocompose.common.utils.Constants.MAX_TITLE_LENGTH
@@ -51,39 +47,23 @@ class SharedViewModel @Inject constructor(
     private val toDoListPresentationToDomainMapper: ToDoListPresentationToDomainMapper,
 ) : ViewModel() {
 
-    var id by mutableStateOf(0)
-        private set
-    var title by mutableStateOf("")
-        private set
-    var description by mutableStateOf("")
-        private set
-    var priority by mutableStateOf("LOW")
-        private set
-    var date by mutableStateOf(0L)
-
-
     var action by mutableStateOf(Action.NO_ACTION)
         private set
 
-    var searchAppBarState by mutableStateOf(SearchAppBarState.CLOSED)
-        private set
-    var searchTextState by mutableStateOf("")
+    val id: MutableState<Int> = mutableStateOf(0)
+    var title: MutableState<String> = mutableStateOf("")
+    var description: MutableState<String> = mutableStateOf("")
+    val priority: MutableState<String> = mutableStateOf("LOW")
+    var date by mutableStateOf(0L)
         private set
 
-    private val _allTasks =
-        MutableStateFlow<RequestState<List<ToDoTaskPresentationModel?>>>(RequestState.Idle)
-    val allTasks: StateFlow<RequestState<List<ToDoTaskPresentationModel?>>> = _allTasks
+    var searchAppBarState: MutableState<SearchAppBarState> =
+        mutableStateOf(SearchAppBarState.CLOSED)
+    var searchTextState: MutableState<String> = mutableStateOf("")
 
     private val _searchedTasks =
         MutableStateFlow<RequestState<List<ToDoTaskPresentationModel?>>>(RequestState.Idle)
     val searchedTasks: StateFlow<RequestState<List<ToDoTaskPresentationModel?>>> = _searchedTasks
-
-    private val _sortState =
-        MutableStateFlow<RequestState<String>>(RequestState.Idle)
-    val sortState: StateFlow<RequestState<String>> = _sortState
-
-    private val _selectedTask: MutableStateFlow<ToDoTaskPresentationModel?> = MutableStateFlow(null)
-    val selectedTask: StateFlow<ToDoTaskPresentationModel?> = _selectedTask
 
     fun searchDatabase(searchQuery: String) {
         _searchedTasks.value = RequestState.Loading
@@ -98,7 +78,7 @@ class SharedViewModel @Inject constructor(
         } catch (e: Exception) {
             _searchedTasks.value = RequestState.Error(e)
         }
-        searchAppBarState = SearchAppBarState.TRIGGERED
+        searchAppBarState.value = SearchAppBarState.TRIGGERED
     }
 
     val lowPriorityTasks: StateFlow<List<ToDoTaskPresentationModel?>> =
@@ -118,6 +98,10 @@ class SharedViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(),
             initialValue = emptyList()
         )
+
+    private val _sortState =
+        MutableStateFlow<RequestState<String>>(RequestState.Idle)
+    val sortState: StateFlow<RequestState<String>> = _sortState
 
     fun readSortState() {
         _sortState.value = RequestState.Loading
@@ -139,6 +123,10 @@ class SharedViewModel @Inject constructor(
         }
     }
 
+    private val _allTasks =
+        MutableStateFlow<RequestState<List<ToDoTaskPresentationModel?>>>(RequestState.Idle)
+    val allTasks: StateFlow<RequestState<List<ToDoTaskPresentationModel?>>> = _allTasks
+
     fun getAllTasks() {
         _allTasks.value = RequestState.Loading
         try {
@@ -154,6 +142,9 @@ class SharedViewModel @Inject constructor(
         }
     }
 
+    private val _selectedTask: MutableStateFlow<ToDoTaskPresentationModel?> = MutableStateFlow(null)
+    val selectedTask: StateFlow<ToDoTaskPresentationModel?> = _selectedTask
+
     fun getSelectedTask(taskId: Int) {
         viewModelScope.launch {
             getSelectedTaskUseCase.invoke(taskId = taskId)
@@ -167,26 +158,25 @@ class SharedViewModel @Inject constructor(
     private fun addTask() {
         viewModelScope.launch(Dispatchers.IO) {
             val toDoTask = ToDoTaskPresentationModel(
-                id = id,
-                title = title,
-                description = description,
-                priority = priority,
+                id = id.value,
+                title = title.value,
+                description = description.value,
+                priority = priority.value,
                 date = System.currentTimeMillis()
-
             )
             addTaskUseCase.invoke(toDoTask = toDoListPresentationToDomainMapper.toDomain(toDoTask))
         }
-        searchAppBarState = SearchAppBarState.CLOSED
+        searchAppBarState.value = SearchAppBarState.CLOSED
     }
 
     private fun updateTask() {
         viewModelScope.launch(Dispatchers.IO) {
             val toDoTask = ToDoTaskPresentationModel(
-                id = id,
-                title = title,
-                description = description,
-                priority = priority,
-                date = date
+                id = id.value,
+                title = title.value,
+                description = description.value,
+                priority = priority.value,
+                date = System.currentTimeMillis()
             )
             updateTaskUseCase.invoke(toDoTask = toDoListPresentationToDomainMapper.toDomain(toDoTask))
         }
@@ -195,10 +185,10 @@ class SharedViewModel @Inject constructor(
     private fun deleteTask() {
         viewModelScope.launch(Dispatchers.IO) {
             val toDoTask = ToDoTaskPresentationModel(
-                id = id,
-                title = title,
-                description = description,
-                priority = priority,
+                id = id.value,
+                title = title.value,
+                description = description.value,
+                priority = priority.value,
                 date = date
             )
             deleteTaskUseCase.invoke(toDoTask = toDoListPresentationToDomainMapper.toDomain(toDoTask))
@@ -216,18 +206,23 @@ class SharedViewModel @Inject constructor(
             Action.ADD -> {
                 addTask()
             }
+
             Action.UPDATE -> {
                 updateTask()
             }
+
             Action.DELETE -> {
                 deleteTask()
             }
+
             Action.DELETE_ALL -> {
                 deleteAllTasks()
             }
+
             Action.UNDO -> {
                 addTask()
             }
+
             else -> {
 
             }
@@ -235,49 +230,48 @@ class SharedViewModel @Inject constructor(
         this.action = Action.NO_ACTION
     }
 
-    fun updateTaskFields(selectedTask: ToDoTaskPresentationModel?) {
+    fun updateTaskFields(selectedTask: ToDoTaskPresentationModel??) {
         if (selectedTask != null) {
-            id = selectedTask.id
-            onTitleUpdate(selectedTask.title)
-            onDescriptionUpdate(selectedTask.description)
-            onPriorityUpdate(selectedTask.priority)
+            id.value = selectedTask.id
+            title.value = selectedTask.title
+            description.value = selectedTask.description
+            priority.value = selectedTask.priority
         } else {
-            id = 0
-            onTitleUpdate("")
-            onDescriptionUpdate("")
-            onPriorityUpdate("LOW")
+            id.value = 0
+            title.value = ""
+            description.value = ""
+            priority.value = "LOW"
         }
     }
 
     fun updateTitle(newTitle: String) {
         if (newTitle.length < MAX_TITLE_LENGTH) {
-            title = newTitle
+            title.value = newTitle
         }
     }
 
     fun updateAppBarState(newState: SearchAppBarState) {
-        searchAppBarState = newState
+        searchAppBarState.value = newState
     }
 
     fun updateSearchText(newText: String) {
-        searchTextState = newText
-    }
-
-    fun validateFields(): Boolean {
-        return title.isNotEmpty() && description.isNotEmpty()
+        searchTextState.value = newText
     }
 
     fun onTitleUpdate(newTitle: String) {
-        title = newTitle
-        Log.d("onTitleUpdate", "title - $title")
+        title.value = newTitle
     }
 
     fun onDescriptionUpdate(newDescription: String) {
-        description = newDescription
+        description.value = newDescription
     }
 
     fun onPriorityUpdate(newPriority: String) {
-        priority = newPriority
+        priority.value = newPriority
+    }
+
+    fun validateFields(): Boolean {
+        return title.value.isNotEmpty() && description.value.isNotEmpty()
     }
 
     fun onUpdateAction(newAction: Action) {
