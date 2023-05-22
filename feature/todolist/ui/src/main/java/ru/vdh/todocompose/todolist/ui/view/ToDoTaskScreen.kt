@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import ru.vdh.todocompose.common.utils.Action
 import ru.vdh.todocompose.todolist.presentation.model.ToDoTaskPresentationModel
+import ru.vdh.todocompose.todolist.presentation.viewmodel.SharedViewModel
 import ru.vdh.todocompose.todolist.ui.components.TaskAppBar
 import ru.vdh.todocompose.todolist.ui.components.TaskContent
 

@@ -3,6 +3,7 @@ package ru.vdh.todocompose.todolist.ui.view
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
@@ -14,22 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.DismissDirection
-import androidx.compose.material3.DismissValue
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.SwipeToDismiss
-import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDismissState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -43,19 +29,27 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.vdh.todocompose.common.utils.Action
-import ru.vdh.todocompose.common.utils.DateUtils
-import ru.vdh.todocompose.core.ui.theme.HighPriorityColor
-import ru.vdh.todocompose.core.ui.theme.LARGEST_PADDING
-import ru.vdh.todocompose.core.ui.theme.LARGE_PADDING
-import ru.vdh.todocompose.core.ui.theme.LowPriorityColor
-import ru.vdh.todocompose.core.ui.theme.MediumPriorityColor
-import ru.vdh.todocompose.core.ui.theme.NonePriorityColor
-import ru.vdh.todocompose.core.ui.theme.PRIORITY_INDICATOR_SIZE
-import ru.vdh.todocompose.core.ui.theme.TASK_ITEM_ELEVATION
 import ru.vdh.todocompose.todolist.presentation.model.RequestState
 import ru.vdh.todocompose.todolist.presentation.model.SearchAppBarState
 import ru.vdh.todocompose.todolist.presentation.model.ToDoTaskPresentationModel
+import androidx.compose.material3.rememberDismissState
+import androidx.compose.material3.DismissDirection
+import androidx.compose.material3.DismissValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.SwipeToDismiss
+import androidx.compose.material3.Text
+import ru.vdh.todocompose.common.utils.DateUtils
+import ru.vdh.todocompose.core.ui.components.parsePriority
+import ru.vdh.todocompose.core.ui.theme.HighPriorityColor
+import ru.vdh.todocompose.core.ui.theme.LARGEST_PADDING
+import ru.vdh.todocompose.core.ui.theme.LARGE_PADDING
+import ru.vdh.todocompose.core.ui.theme.PRIORITY_INDICATOR_SIZE
+import ru.vdh.todocompose.core.ui.theme.TASK_ITEM_ELEVATION
 
+@ExperimentalAnimationApi
 @Composable
 fun ListContent(
     allTasks: RequestState<List<ToDoTaskPresentationModel?>>,
@@ -110,6 +104,7 @@ fun ListContent(
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun HandleListContent(
     tasks: List<ToDoTaskPresentationModel?>,
@@ -131,6 +126,7 @@ fun HandleListContent(
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
+@ExperimentalAnimationApi
 @Composable
 fun DisplayTasks(
     tasks: List<ToDoTaskPresentationModel?>,
@@ -292,23 +288,6 @@ fun TaskItem(
         }
     }
 }
-
-private fun parsePriority(priority: String) =
-    when (priority) {
-        "HIGH" -> {
-            HighPriorityColor
-        }
-
-        "MEDIUM" -> {
-            MediumPriorityColor
-        }
-
-        "LOW" -> {
-            LowPriorityColor
-        }
-
-        else -> NonePriorityColor
-    }
 
 @Composable
 @Preview

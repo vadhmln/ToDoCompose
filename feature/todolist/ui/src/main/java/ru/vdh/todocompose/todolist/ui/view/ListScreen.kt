@@ -2,6 +2,8 @@ package ru.vdh.todocompose.todolist.ui.view
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
@@ -11,12 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.launch
@@ -25,13 +22,13 @@ import ru.vdh.todocompose.todolist.presentation.model.SearchAppBarState
 import ru.vdh.todocompose.todolist.presentation.viewmodel.SharedViewModel
 import ru.vdh.todocompose.todolist.ui.components.ListAppBar
 
-@OptIn(ExperimentalAnimationApi::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
+@ExperimentalAnimationApi
 @Composable
-fun ToDoListScreen(
+fun ListScreen(
     action: Action,
     navigateToTaskScreen: (taskId: Int) -> Unit,
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
 ) {
     LaunchedEffect(key1 = true) {
         sharedViewModel.getAllTasks()
@@ -44,8 +41,8 @@ fun ToDoListScreen(
     val lowPriorityTasks by sharedViewModel.lowPriorityTasks.collectAsState()
     val highPriorityTasks by sharedViewModel.highPriorityTasks.collectAsState()
 
-    val searchAppBarState: SearchAppBarState = sharedViewModel.searchAppBarState
-    val searchTextState: String = sharedViewModel.searchTextState
+    val searchAppBarState: SearchAppBarState by sharedViewModel.searchAppBarState
+    val searchTextState: String by sharedViewModel.searchTextState
 
     val snackBarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -54,7 +51,7 @@ fun ToDoListScreen(
         snackBarHostState = snackBarHostState,
         handleDatabaseActions = { sharedViewModel.handleDatabaseActions(action = action) },
         onUndoClicked = { sharedViewModel.onUpdateAction(newAction = it) },
-        taskTitle = sharedViewModel.title,
+        taskTitle = sharedViewModel.title.value,
         action = action
     )
 
@@ -80,7 +77,7 @@ fun ToDoListScreen(
                     sharedViewModel.updateTaskFields(selectedTask = task)
                 },
                 navigateToTaskScreen = navigateToTaskScreen,
-                paddingValues = it
+                paddingValues = paddingValues
             )
         },
         floatingActionButton = {

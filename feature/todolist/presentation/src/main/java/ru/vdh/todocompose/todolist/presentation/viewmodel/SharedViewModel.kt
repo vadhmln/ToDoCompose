@@ -255,6 +255,14 @@ class SharedViewModel @Inject constructor(
         }
     }
 
+    fun updateAppBarState(newState: SearchAppBarState) {
+        searchAppBarState = newState
+    }
+
+    fun updateSearchText(newText: String) {
+        searchTextState = newText
+    }
+
     fun validateFields(): Boolean {
         return title.isNotEmpty() && description.isNotEmpty()
     }

@@ -1,30 +1,25 @@
 package ru.vdh.todocompose.todolist.navigation
 
-import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
+import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.google.accompanist.navigation.animation.composable
-import ru.vdh.todocompose.common.utils.Action
 import ru.vdh.todocompose.common.utils.Constants.LIST_ARGUMENT_KEY
 import ru.vdh.todocompose.common.utils.Constants.LIST_SCREEN
 import ru.vdh.todocompose.common.utils.toAction
 import ru.vdh.todocompose.todolist.presentation.viewmodel.SharedViewModel
-import ru.vdh.todocompose.todolist.ui.view.ToDoListScreen
+import ru.vdh.todocompose.todolist.ui.view.ListScreen
 
-@SuppressLint("RememberReturnType")
-@OptIn(ExperimentalAnimationApi::class)
-fun NavGraphBuilder.todoListComposable(
+@ExperimentalAnimationApi
+fun NavGraphBuilder.listComposable(
     navigateToTaskScreen: (taskId: Int) -> Unit,
     sharedViewModel: SharedViewModel,
-    navController: NavController
+    navController: NavController,
+    paddingValues: PaddingValues
 ) {
     composable(
         route = LIST_SCREEN,
@@ -32,24 +27,19 @@ fun NavGraphBuilder.todoListComposable(
             type = NavType.StringType
         })
     ) { navBackStackEntry ->
-
         val action = navBackStackEntry.arguments?.getString(LIST_ARGUMENT_KEY).toAction()
 
-        var myAction by rememberSaveable { mutableStateOf(Action.NO_ACTION) }
-
-        LaunchedEffect(key1 = myAction) {
-            if (action != myAction) {
-                myAction = action
-                sharedViewModel.onUpdateAction(newAction = action)
-            } else { Action.NO_ACTION }
+        LaunchedEffect(key1 = action) {
+            sharedViewModel.onUpdateAction(newAction = action)
         }
 
         val databaseAction = sharedViewModel.action
 
-        ToDoListScreen(
+        ListScreen(
             action = databaseAction,
             navigateToTaskScreen = navigateToTaskScreen,
             sharedViewModel = sharedViewModel,
+            paddingValues = paddingValues
         )
     }
 }
