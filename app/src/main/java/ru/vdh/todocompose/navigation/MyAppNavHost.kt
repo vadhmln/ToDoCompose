@@ -10,7 +10,6 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import ru.vdh.cleanarch.navigation.Screens
 import ru.vdh.todocompose.common.utils.Constants.LIST_SCREEN
 import ru.vdh.todocompose.todolist.navigation.listComposable
-import ru.vdh.todocompose.todolist.navigation.todoListComposable
 import ru.vdh.todocompose.todolist.navigation.todoTaskComposable
 import ru.vdh.todocompose.todolist.presentation.viewmodel.SharedViewModel
 

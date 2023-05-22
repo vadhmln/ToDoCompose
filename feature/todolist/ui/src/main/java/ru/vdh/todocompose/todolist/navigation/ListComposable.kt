@@ -19,7 +19,6 @@ fun NavGraphBuilder.listComposable(
     navigateToTaskScreen: (taskId: Int) -> Unit,
     sharedViewModel: SharedViewModel,
     navController: NavController,
-    paddingValues: PaddingValues
 ) {
     composable(
         route = LIST_SCREEN,
@@ -39,7 +38,6 @@ fun NavGraphBuilder.listComposable(
             action = databaseAction,
             navigateToTaskScreen = navigateToTaskScreen,
             sharedViewModel = sharedViewModel,
-            paddingValues = paddingValues
         )
     }
 }

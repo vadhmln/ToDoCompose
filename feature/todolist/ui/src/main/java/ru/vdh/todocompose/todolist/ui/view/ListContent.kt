@@ -134,7 +134,7 @@ fun DisplayTasks(
     navigateToTaskScreen: (taskId: Int) -> Unit,
     paddingValues: PaddingValues
 ) {
-    LazyColumn {
+    LazyColumn(modifier = Modifier.padding(top = paddingValues.calculateTopPadding())) {
         items(
             items = tasks,
             key = { task ->
