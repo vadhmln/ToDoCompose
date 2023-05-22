@@ -77,7 +77,7 @@ fun ListScreen(
                     sharedViewModel.updateTaskFields(selectedTask = task)
                 },
                 navigateToTaskScreen = navigateToTaskScreen,
-                paddingValues = paddingValues
+                paddingValues = it
             )
         },
         floatingActionButton = {
