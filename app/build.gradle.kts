@@ -70,12 +70,6 @@ dependencies {
     implementation(project(":feature:todolist:data"))
     implementation(project(":feature:todolist:datasource"))
 
-    implementation(project(":feature:todotask:ui"))
-    implementation(project(":feature:todotask:presentation"))
-    implementation(project(":feature:todotask:domain"))
-    implementation(project(":feature:todotask:data"))
-    implementation(project(":feature:todotask:datasource"))
-
     implementation(libs.core.ktx)
     implementation(libs.android.material)
     implementation(libs.navigation.fragment.ktx)

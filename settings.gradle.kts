@@ -31,13 +31,6 @@ include(":feature:todolist:domain")
 include(":feature:todolist:data")
 include(":feature:todolist:datasource")
 
-include(":feature:todotask")
-include(":feature:todotask:ui")
-include(":feature:todotask:presentation")
-include(":feature:todotask:domain")
-include(":feature:todotask:data")
-include(":feature:todotask:datasource")
-
 include(":navigation")
 include(":common")
 include(":core:database")
