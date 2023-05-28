@@ -89,6 +89,7 @@ dependencies {
     implementation(libs.ui.tooling.preview)
     implementation(libs.compose.material3)
     implementation(libs.androidx.material3.size)
+    implementation(libs.compose.material)
 
     //Room
     implementation(libs.room.runtime)

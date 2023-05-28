@@ -66,7 +66,7 @@ dependencies {
     kapt(libs.hilt.android.compiler)
 
     // Accompanist Navigation Animation
-    implementation (libs.accompanist.navigation.animation)
+//    implementation (libs.accompanist.navigation.animation)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

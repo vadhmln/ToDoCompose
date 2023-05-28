@@ -9,6 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,9 +38,9 @@ import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
 import ru.vdh.todocompose.common.utils.DateUtils
 import ru.vdh.todocompose.core.ui.components.parsePriority
@@ -48,8 +49,9 @@ import ru.vdh.todocompose.core.ui.theme.LARGEST_PADDING
 import ru.vdh.todocompose.core.ui.theme.LARGE_PADDING
 import ru.vdh.todocompose.core.ui.theme.PRIORITY_INDICATOR_SIZE
 import ru.vdh.todocompose.core.ui.theme.TASK_ITEM_ELEVATION
+import ru.vdh.todocompose.todolist.presentation.viewmodel.SharedViewModel
 
-@ExperimentalAnimationApi
+@ExperimentalMaterial3Api
 @Composable
 fun ListContent(
     allTasks: RequestState<List<ToDoTaskPresentationModel?>>,
@@ -60,6 +62,7 @@ fun ListContent(
     searchAppBarState: SearchAppBarState,
     onSwipeToDelete: (Action, ToDoTaskPresentationModel?) -> Unit,
     navigateToTaskScreen: (taskId: Int) -> Unit,
+    sharedViewModel: SharedViewModel,
     paddingValues: PaddingValues
 ) {
     if (sortState is RequestState.Success) {
@@ -74,6 +77,7 @@ fun ListContent(
                     )
                 }
             }
+
             sortState.data == "NONE" -> {
                 if (allTasks is RequestState.Success) {
                     HandleListContent(
@@ -84,6 +88,7 @@ fun ListContent(
                     )
                 }
             }
+
             sortState.data == "LOW" -> {
                 HandleListContent(
                     tasks = lowPriorityTasks,
@@ -92,6 +97,7 @@ fun ListContent(
                     paddingValues = paddingValues
                 )
             }
+
             sortState.data == "HIGH" -> {
                 HandleListContent(
                     tasks = highPriorityTasks,
@@ -104,7 +110,8 @@ fun ListContent(
     }
 }
 
-@ExperimentalAnimationApi
+@OptIn(ExperimentalAnimationApi::class, ExperimentalFoundationApi::class)
+@ExperimentalMaterial3Api
 @Composable
 fun HandleListContent(
     tasks: List<ToDoTaskPresentationModel?>,
@@ -125,8 +132,9 @@ fun HandleListContent(
 }
 
 @SuppressLint("CoroutineCreationDuringComposition")
-@OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalAnimationApi
+@ExperimentalMaterial3Api
+@ExperimentalFoundationApi
 @Composable
 fun DisplayTasks(
     tasks: List<ToDoTaskPresentationModel?>,
@@ -134,13 +142,17 @@ fun DisplayTasks(
     navigateToTaskScreen: (taskId: Int) -> Unit,
     paddingValues: PaddingValues
 ) {
-    LazyColumn(modifier = Modifier.padding(top = paddingValues.calculateTopPadding())) {
+    LazyColumn(
+        modifier = Modifier.padding(top = paddingValues.calculateTopPadding())
+    ) {
         items(
             items = tasks,
             key = { task ->
                 task?.id ?: 0
             }
         ) { task ->
+            val currentItem by rememberUpdatedState(task)
+
             val dismissState = rememberDismissState()
             val dismissDirection = dismissState.dismissDirection
             val isDismissed = dismissState.isDismissed(DismissDirection.EndToStart)
@@ -148,7 +160,7 @@ fun DisplayTasks(
                 val scope = rememberCoroutineScope()
                 scope.launch {
                     delay(300)
-                    onSwipeToDelete(Action.DELETE, task)
+                    onSwipeToDelete(Action.DELETE, currentItem)
                 }
             }
 
@@ -156,11 +168,12 @@ fun DisplayTasks(
                 if (dismissState.targetValue == DismissValue.Default)
                     0f
                 else
-                    -45f, label = ""
+                    -45f,
+                label = ""
             )
 
             var itemAppeared by remember { mutableStateOf(false) }
-            LaunchedEffect(key1 = true){
+            LaunchedEffect(key1 = true) {
                 itemAppeared = true
             }
 
@@ -179,6 +192,9 @@ fun DisplayTasks(
             ) {
                 SwipeToDismiss(
                     state = dismissState,
+                    modifier = Modifier
+                        .padding(vertical = 1.dp)
+                        .animateItemPlacement(),
                     directions = setOf(DismissDirection.EndToStart),
 //                    dismissThresholds = { FractionalThreshold(fraction = 0.2f) },
                     background = { RedBackground(degrees = degrees) },
@@ -212,6 +228,7 @@ fun RedBackground(degrees: Float) {
     }
 }
 
+@ExperimentalMaterial3Api
 @Composable
 fun TaskItem(
     toDoTask: ToDoTaskPresentationModel?,
@@ -289,6 +306,7 @@ fun TaskItem(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
 private fun TaskItemPreview() {

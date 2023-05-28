@@ -227,7 +227,6 @@ fun SearchAppBar(
     onCloseClicked: () -> Unit,
     onSearchClicked: (String) -> Unit
 ) {
-
     Surface(
         modifier = Modifier
             .fillMaxWidth()

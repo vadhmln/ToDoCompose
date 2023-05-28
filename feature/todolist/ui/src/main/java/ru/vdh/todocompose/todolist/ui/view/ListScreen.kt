@@ -5,6 +5,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -21,7 +22,7 @@ import ru.vdh.todocompose.todolist.presentation.model.SearchAppBarState
 import ru.vdh.todocompose.todolist.presentation.viewmodel.SharedViewModel
 import ru.vdh.todocompose.todolist.ui.components.ListAppBar
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ListScreen(
@@ -76,6 +77,7 @@ fun ListScreen(
                     sharedViewModel.updateTaskFields(selectedTask = task)
                 },
                 navigateToTaskScreen = navigateToTaskScreen,
+                sharedViewModel = sharedViewModel,
                 paddingValues = it
             )
         },

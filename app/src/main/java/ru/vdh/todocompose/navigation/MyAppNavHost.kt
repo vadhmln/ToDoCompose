@@ -5,8 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
 import ru.vdh.cleanarch.navigation.Screens
 import ru.vdh.todocompose.common.utils.Constants.LIST_SCREEN
 import ru.vdh.todocompose.todolist.navigation.listComposable
@@ -17,7 +17,7 @@ import ru.vdh.todocompose.todolist.presentation.viewmodel.SharedViewModel
 @Composable
 fun MyAppNavHost(
     modifier: Modifier = Modifier,
-    navController: NavHostController = rememberAnimatedNavController(),
+    navController: NavHostController = rememberNavController(),
     onBackClick: () -> Unit,
     sharedViewModel: SharedViewModel,
 ) {
@@ -26,7 +26,7 @@ fun MyAppNavHost(
         Screens(navController = navController)
     }
 
-    AnimatedNavHost(
+    NavHost(
         modifier = modifier,
         navController = navController,
         startDestination = LIST_SCREEN
@@ -34,7 +34,6 @@ fun MyAppNavHost(
         listComposable(
             navigateToTaskScreen = screen.list,
             sharedViewModel,
-            navController
         )
         todoTaskComposable(
             navigateToListScreen = screen.task,

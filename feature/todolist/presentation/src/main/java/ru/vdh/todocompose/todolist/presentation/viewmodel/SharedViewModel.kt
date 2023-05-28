@@ -1,5 +1,6 @@
 package ru.vdh.todocompose.todolist.presentation.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -221,6 +222,7 @@ class SharedViewModel @Inject constructor(
 
             Action.UNDO -> {
                 addTask()
+                Log.d("undo", "trig!!!")
             }
 
             else -> {

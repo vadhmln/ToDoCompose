@@ -1,7 +1,9 @@
 package ru.vdh.todocompose.todolist.navigation
 
+import android.util.Log
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.LaunchedEffect
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
@@ -12,10 +14,10 @@ import ru.vdh.todocompose.common.utils.toAction
 import ru.vdh.todocompose.todolist.presentation.viewmodel.SharedViewModel
 import ru.vdh.todocompose.todolist.ui.view.ListScreen
 
+@ExperimentalAnimationApi
 fun NavGraphBuilder.listComposable(
     navigateToTaskScreen: (taskId: Int) -> Unit,
-    sharedViewModel: SharedViewModel,
-    navController: NavController,
+    sharedViewModel: SharedViewModel
 ) {
     composable(
         route = LIST_SCREEN,
@@ -24,6 +26,7 @@ fun NavGraphBuilder.listComposable(
         })
     ) { navBackStackEntry ->
         val action = navBackStackEntry.arguments?.getString(LIST_ARGUMENT_KEY).toAction()
+        Log.d("Action", "$action")
 
         LaunchedEffect(key1 = action) {
             sharedViewModel.onUpdateAction(newAction = action)
@@ -34,7 +37,7 @@ fun NavGraphBuilder.listComposable(
         ListScreen(
             action = databaseAction,
             navigateToTaskScreen = navigateToTaskScreen,
-            sharedViewModel = sharedViewModel,
+            sharedViewModel = sharedViewModel
         )
     }
 }
